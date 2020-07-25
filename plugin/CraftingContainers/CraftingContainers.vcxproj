@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildProjectExtensionsPath)$(MSBuildProjectFile).*.targets" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0a92182c-74cc-4bb9-932f-7db992ad70b6}</ProjectGuid>
+    <RootNamespace>SkyrimOutfitSystem</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>CraftingContainers</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(ProjectDir);</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\common;$(SolutionDir);$(SolutionDir)\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXAMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ForcedIncludeFiles>common/IPrefix.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\common;$(SolutionDir);$(SolutionDir)\..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXAMPLE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <!--
+         The ObjectFileName seen here will not be used. Refer to the task at 
+         the top of this document, and the code comments therein.
+      -->
+      <ObjectFileName>$(IntDir)/%(RelativeDir)/</ObjectFileName>
+      <ForcedIncludeFiles>common/IPrefix.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeader />
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="helpers\strings.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Miscellaneous\tests.cpp" />
+    <ClCompile Include="Miscellaneous\utf8naturalsort.cpp" />
+    <ClCompile Include="Miscellaneous\utf8string.cpp" />
+    <ClCompile Include="Patches\AlchemyMenu.cpp" />
+    <ClCompile Include="Patches\Exploratory.cpp" />
+    <ClCompile Include="ReverseEngineered\ExtraData.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\Actor.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\ActorValueInfo.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\BGSListForm.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\FormComponents\TESModel.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\HardcodedForms.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\Projectile.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESEffectShader.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESForm.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESObjectCELL.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESObjectREFR.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESPackage.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESWaterForm.cpp" />
+    <ClCompile Include="ReverseEngineered\Forms\TESWorldSpace.cpp" />
+    <ClCompile Include="ReverseEngineered\GameSettings.cpp" />
+    <ClCompile Include="ReverseEngineered\INI.cpp" />
+    <ClCompile Include="ReverseEngineered\Miscellaneous.cpp" />
+    <ClCompile Include="ReverseEngineered\NetImmerse\havok.cpp" />
+    <ClCompile Include="ReverseEngineered\NetImmerse\NiExtraData.cpp" />
+    <ClCompile Include="ReverseEngineered\NetImmerse\nodes.cpp" />
+    <ClCompile Include="ReverseEngineered\NetImmerse\objects.cpp" />
+    <ClCompile Include="ReverseEngineered\Objects\ActorWeightData.cpp" />
+    <ClCompile Include="ReverseEngineered\Objects\BGSPrimitive.cpp" />
+    <ClCompile Include="ReverseEngineered\Player\PlayerCharacter.cpp" />
+    <ClCompile Include="ReverseEngineered\Shared.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\BGSImpactManager.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\BSResource.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\BSTaskPool.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\BSTEvent.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\DefaultObjects.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\GameData.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\Main.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\Sound.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\Timing.cpp" />
+    <ClCompile Include="ReverseEngineered\UI\Crafting.cpp" />
+    <ClCompile Include="ReverseEngineered\UI\Miscellaneous.cpp" />
+    <ClCompile Include="Services\ContainerHelper.cpp" />
+    <ClCompile Include="Services\INI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exports.def" />
+    <None Include="scripts\SkyrimOutfitSystemNativeFuncs.psc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="helpers\strings.h" />
+    <ClInclude Include="Miscellaneous\strings.h" />
+    <ClInclude Include="Miscellaneous\tests.h" />
+    <ClInclude Include="Miscellaneous\utf8naturalsort.h" />
+    <ClInclude Include="Miscellaneous\utf8string.h" />
+    <ClInclude Include="Patches\AlchemyMenu.h" />
+    <ClInclude Include="Patches\Exploratory.h" />
+    <ClInclude Include="ReverseEngineered\ExtraData.h" />
+    <ClInclude Include="ReverseEngineered\Forms\Actor.h" />
+    <ClInclude Include="ReverseEngineered\Forms\ActorValueInfo.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\base.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESActorBase.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESFurniture.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESNPC.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESObjectACTI.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESObjectARMO.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESObjectLIGH.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESObjectSTAT.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESObjectWEAP.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSAcousticSpace.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSBodyPartData.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSEncounterZone.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSEquipSlot.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSLightingTemplate.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSListForm.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSMessage.h" />
+    <ClInclude Include="ReverseEngineered\Forms\FormComponents\BGSBipedObjectForm.h" />
+    <ClInclude Include="ReverseEngineered\Forms\FormComponents\FormDecalData.h" />
+    <ClInclude Include="ReverseEngineered\Forms\FormComponents\TESContainer.h" />
+    <ClInclude Include="ReverseEngineered\Forms\FormComponents\TESModel.h" />
+    <ClInclude Include="ReverseEngineered\Forms\HardcodedForms.h" />
+    <ClInclude Include="ReverseEngineered\Forms\MagicItem.h" />
+    <ClInclude Include="ReverseEngineered\Forms\Projectile.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESEffectShader.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESFaction.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESForm.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESGlobal.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESGrass.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESImageSpace.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESLoadScreen.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESObjectARMA.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESObjectCELL.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESObjectLAND.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESObjectREFR.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESPackage.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESQuest.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESRace.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESTopic.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESWaterForm.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESWeather.h" />
+    <ClInclude Include="ReverseEngineered\Forms\TESWorldSpace.h" />
+    <ClInclude Include="ReverseEngineered\GameSettings.h" />
+    <ClInclude Include="ReverseEngineered\INI.h" />
+    <ClInclude Include="ReverseEngineered\Miscellaneous.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\controllers.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\geometry.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\havok.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\NiExtraData.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\nodes.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\objects.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\SceneGraph.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\shaders.h" />
+    <ClInclude Include="ReverseEngineered\NetImmerse\types.h" />
+    <ClInclude Include="ReverseEngineered\Objects\Actions.h" />
+    <ClInclude Include="ReverseEngineered\Objects\ActiveEffect.h" />
+    <ClInclude Include="ReverseEngineered\Objects\ActorWeightData.h" />
+    <ClInclude Include="ReverseEngineered\Objects\Alias.h" />
+    <ClInclude Include="ReverseEngineered\Objects\BGSPrimitive.h" />
+    <ClInclude Include="ReverseEngineered\Objects\Navmesh.h" />
+    <ClInclude Include="ReverseEngineered\Objects\SimpleAnimationGraphManagerHolder.h" />
+    <ClInclude Include="ReverseEngineered\Objects\Sky.h" />
+    <ClInclude Include="ReverseEngineered\Player\PlayerCharacter.h" />
+    <ClInclude Include="ReverseEngineered\Player\PlayerSkills.h" />
+    <ClInclude Include="ReverseEngineered\Player\TrainingMenu.h" />
+    <ClInclude Include="ReverseEngineered\Shared.h" />
+    <ClInclude Include="ReverseEngineered\Systems\012E32E8.h" />
+    <ClInclude Include="ReverseEngineered\Systems\012E35CC.h" />
+    <ClInclude Include="ReverseEngineered\Systems\012E59D4.h" />
+    <ClInclude Include="ReverseEngineered\Systems\01B115D8.h" />
+    <ClInclude Include="ReverseEngineered\Systems\01B2E724.h" />
+    <ClInclude Include="ReverseEngineered\Systems\01B3B2E8.h" />
+    <ClInclude Include="ReverseEngineered\Systems\01B9ED08.h" />
+    <ClInclude Include="ReverseEngineered\Systems\ActorAI\base.h" />
+    <ClInclude Include="ReverseEngineered\Systems\AttackProcessing.h" />
+    <ClInclude Include="ReverseEngineered\Systems\BGSImpactManager.h" />
+    <ClInclude Include="ReverseEngineered\Systems\BSResource.h" />
+    <ClInclude Include="ReverseEngineered\Systems\BSTaskPool.h" />
+    <ClInclude Include="ReverseEngineered\Systems\BSTEvent.h" />
+    <ClInclude Include="ReverseEngineered\Systems\ChangeForms.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Decals.h" />
+    <ClInclude Include="ReverseEngineered\Systems\DefaultObjects.h" />
+    <ClInclude Include="ReverseEngineered\Systems\DelayFunctorManager.h" />
+    <ClInclude Include="ReverseEngineered\Systems\EquipManager.h" />
+    <ClInclude Include="ReverseEngineered\Systems\ExteriorCellLoaderTask.h" />
+    <ClInclude Include="ReverseEngineered\Systems\GameData.h" />
+    <ClInclude Include="ReverseEngineered\Systems\GameInput.h" />
+    <ClInclude Include="ReverseEngineered\Systems\GameResources.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Magic.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Main.h" />
+    <ClInclude Include="ReverseEngineered\Systems\MiscStats.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Navmesh.h" />
+    <ClInclude Include="ReverseEngineered\Systems\ReferenceEffects.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Response\BSResponse.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Savedata\BGSLoadGameBuffer.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Savedata\BGSSaveFormBuffer.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Savedata\BGSSaveLoadManager.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Sound.h" />
+    <ClInclude Include="ReverseEngineered\Systems\TESCamera.h" />
+    <ClInclude Include="ReverseEngineered\Systems\TESFile.h" />
+    <ClInclude Include="ReverseEngineered\Systems\ThreadLocalStorage.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Timing.h" />
+    <ClInclude Include="ReverseEngineered\Types.h" />
+    <ClInclude Include="ReverseEngineered\UI\Crafting.h" />
+    <ClInclude Include="ReverseEngineered\UI\IMenu.h" />
+    <ClInclude Include="ReverseEngineered\UI\MessageBoxCallbacks.h" />
+    <ClInclude Include="ReverseEngineered\UI\Miscellaneous.h" />
+    <ClInclude Include="Services\ContainerHelper.h" />
+    <ClInclude Include="Services\INI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{20c6411c-596f-4b85-be4e-8bc91f59d8a6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\skse\skse.vcxproj">
+      <Project>{7e0e2d11-eaeb-4404-8d77-ca3572c8680e}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
