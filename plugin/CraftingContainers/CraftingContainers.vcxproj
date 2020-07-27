@@ -157,7 +157,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />
-    <None Include="scripts\SkyrimOutfitSystemNativeFuncs.psc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="helpers\strings.h" />

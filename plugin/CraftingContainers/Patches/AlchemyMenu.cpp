@@ -23,7 +23,12 @@ namespace Patches {
                // We want to do that if the container is the player, since they should be able to use anything 
                // they've stolen, but we extremely don't want to do it otherwise.
                //
-               menu->ImportIngredientsFrom(container);
+               //  - EDIT: HAHAHA, DISREGARD THAT; THAT WOULD PREVENT THE PLAYER FROM USING STOLEN ITEMS IN 
+               //    CONTAINERS IN THEIR OWN HOMES. Bethesda usually doesn't and AFAIK technically can't set 
+               //    ownership on individual items inside of an unowned container so this should not be a 
+               //    concern.
+               //
+               menu->ImportIngredientsFrom(container, true);
                _MESSAGE("AlchemyMenu: PopulateItemList: We have %u ingredients...", menu->availableIngredients.count);
                //
                // TODO: There is another problem with just running this in a loop, on multiple containers: if 
@@ -37,6 +42,21 @@ namespace Patches {
                // of the ingredients that you used had multiple listings in the menu, then the menu will be 
                // unable to preserve your selection (i.e. all ingredients will be deselected, which is not 
                // great).
+               //
+               // So what we need to do first is confirm what I suspect to be the case: we need to see whether 
+               // AlchemyMenu's InventoryEntryData are copies of the player's inventory entries, rather than 
+               // pointers to the original.
+               //
+               // If so, then the naive approach would be to clumsily merge two duplicate InventoryEntryData 
+               // by adding one's count to the other and then deleting the former object. However, that would 
+               // fail to accurately represent certain item traits such as ownership (the stolen flag). What 
+               // we want to do instead is see if the game has a way to fully and properly merge two entries.
+               //
+               //  - Does the game perform merges in the TESObjectREFR "count item types" function, to prep 
+               //    for the "get by index" function?
+               //
+               //  - Merges would involve destroying one of the two merged objects. We could look for calls 
+               //    to InventoryEntryData's destructor that are not accompanied by calls to the constructor.
                //
             }
             _MESSAGE("AlchemyMenu: PopulateItemList: Done.");

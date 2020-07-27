@@ -158,21 +158,26 @@ namespace RE {
          static ExtraCollisionData* Create();
    };
    //
-   class InventoryEntryData {
+   class InventoryEntryData { // sizeof == 0xC
       public:
-         TESForm* type;
-         tList<BaseExtraList>* extendDataList;
-         SInt32   countDelta;
+         TESForm* type; // 00
+         tList<BaseExtraList>* extendDataList; // 04 // TODO: this is a singly-linked list, not a doubly-linked list
+         SInt32   countDelta; // 08
 
          MEMBER_FN_PREFIX(InventoryEntryData);
-         DEFINE_MEMBER_FN(Destructor, void, 0x00476A70);
+         DEFINE_MEMBER_FN(Constructor, InventoryEntryData&, 0x004750C0, TESForm*, int32_t count);
+         DEFINE_MEMBER_FN(Destructor, void, 0x00475110);
          DEFINE_MEMBER_FN(GenerateName,  const char*, 0x00475AA0);
+         DEFINE_MEMBER_FN(GetFirstOwner, void*,  0x004755A0); // returns this->extendDataList[0]->GetExtraOwnership()
          DEFINE_MEMBER_FN(GetSoulLevel,  SInt32, 0x00475740); // charge amount
          DEFINE_MEMBER_FN(GetSoulSize,   UInt32, 0x004756F0); // enum
          DEFINE_MEMBER_FN(GetValue,      SInt32, 0x00475450);
          DEFINE_MEMBER_FN(IsQuestObject, bool,   0x004759B0);
          DEFINE_MEMBER_FN(IsOwnedBy,     bool,   0x00477010, TESForm* actor, bool unk1);
          DEFINE_MEMBER_FN(IsWorn,        bool,   0x004758C0); // checks extra data
+         DEFINE_MEMBER_FN(SimplifyExtendDataList, int32_t, 0x00476D80); // removes any BaseExtraLists that consist solely of ExtraCount. return value is an integer; meaning is unclear.
+         DEFINE_MEMBER_FN(Subroutine004751F0, bool, 0x004751F0);
+         DEFINE_MEMBER_FN(AbandonExtraData, void, 0x00476A70);
 
          ~InventoryEntryData() { CALL_MEMBER_FN(this, Destructor)(); }
          inline void Delete() {
@@ -184,8 +189,8 @@ namespace RE {
    };
    class InventoryChanges {
       public:
-         tList<InventoryEntryData>* objList; // 00
-         TESObjectREFR* owner; // 04 // more like "carrier," actually
+         tList<InventoryEntryData>* objList; // 00 // TODO: this is a singly-linked list, not a doubly-linked list
+         TESObjectREFR* container; // 04
          float totalWeight; // 08 // -1.0F means "needs to be recomputed"
          float armorWeight; // 0C
 
@@ -202,6 +207,8 @@ namespace RE {
          DEFINE_MEMBER_FN(UnequipArmorFromSlot,  void, 0x00475F30, UInt32 bodyPartIndex, Actor* target);
          DEFINE_MEMBER_FN(GetItemCount,          SInt32, 0x0047A4D0, TESForm*);
          DEFINE_MEMBER_FN(CountItemTypes, UInt32, 0x0047A510, bool includeNonPlayableItems);
+         DEFINE_MEMBER_FN(GetInventoryEntryAt, InventoryEntryData*, 0x0047D9C0, uint32_t index); // (index) is relative to (CountItemTypes) // returns a shallow copy: new entry data, but pointers to the BaseExtraLists of the others
+         DEFINE_MEMBER_FN(FindEntry, InventoryEntryData*, 0x00477B20, TESForm* baseItem, uint32_t, uint32_t refrFormID);
    };
    class ExtraContainerChanges : public BSExtraData {
       //
@@ -887,6 +894,7 @@ namespace RE {
          DEFINE_MEMBER_FN(SetExtraCellMusicType,            void,             0x00410D10, BGSMusicType*);
          DEFINE_MEMBER_FN(SetExtraCharge,                   ExtraCharge*,     0x0040C780, UInt32);       // Creates the new extra-data if needed.
          DEFINE_MEMBER_FN(SetExtraCollisionData,            void,             0x00411FA0, ExtraCollisionData::Data*); // Destroys any existing extra-data, and then creates some if the supplied pointer is not null.
+         DEFINE_MEMBER_FN(SetExtraCount,                    void,             0x0040FCE0, int32_t);
          DEFINE_MEMBER_FN(SetExtraEnableStateParentFlags,   void,             0x0040D310, UInt8 flags);  // Does nothing if no extra-data present.
          DEFINE_MEMBER_FN(SetExtraFlags,                    void,             0x00416C50, UInt32 flagsMask, bool value); // Creates the new extra-data if needed.
          DEFINE_MEMBER_FN(SetExtraForcedTargetRefHandle,    void,             0x00413F30, UInt32);
