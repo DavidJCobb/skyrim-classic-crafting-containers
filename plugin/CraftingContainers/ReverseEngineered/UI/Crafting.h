@@ -170,31 +170,49 @@ namespace RE {
          public:
             static constexpr uint32_t vtbl = 0x010E4460;
             //
+            class ItemChangeEntry { // sizeof == 0x14, allocated on the game heap
+               public:
+                  static constexpr uint32_t vtbl = 0x010E4240;
+                  static constexpr uint32_t rtti = 0x012B2920;
+                  //
+                  uint32_t unk04 = 0;
+                  uint32_t unk08; // == 0x40 for soul gems; == 0x04 for armor at least sometimes
+                  uint8_t  unk0C = false; // probably "selected", same as AlchemyMenu::EntryData
+                  uint8_t  unk0D = true; // probably "enabled", same as AlchemyMenu::EntryData
+                  uint16_t pad0E = 0;
+                  InventoryEntryData* unk10 = nullptr;
+                  //
+                  MEMBER_FN_PREFIX(ItemChangeEntry);
+                  DEFINE_MEMBER_FN(Constructor, ItemChangeEntry&, 0x0084C580, uint32_t unk08, InventoryEntryData* unk10);
+            };
+            //
             uint32_t unkA8 = 0x0A;
             uint32_t unkAC = 0;
             uint32_t unkB0 = 5;
             uint32_t unkB4 = 0x30;
             uint32_t unkB8 = 0x40;
-            tArray<uint32_t> unkBC;
+            tArray<ItemChangeEntry*> unkBC; // used for soul gems and armor; probably used for weapons, too
             BSString unkC8; // 3D model path?
             GFxValue unkD0;
             GFxValue unkE0; // entryList?
             struct {
-               uint32_t unk00 = 0;
-               uint32_t unk04 = 0;
-               tArray<uint32_t> unk08;
+               void* unk00 = nullptr; // 00 // selected item to enchant?
+               void* unk04 = nullptr; // 04 // selected soul gem
+               tArray<uint32_t> unk08; // 08 // enchantments to apply?
             } unkF0;
             int32_t  maxEnchantments; // 104 // max number of enchantments on a single item. the Mod Applied Enchantments Allowed perk entry point is checked once, in the constructor
             InventoryEntryData* unk108 = 0; // 108 // see SetItem3D
-            uint32_t unk10C; // virtual
-            uint16_t unk110 = 0;
-            uint32_t unk114;
-            uint32_t unk118;
-            uint32_t unk11C;
-            uint32_t unk120 = 0;
-            uint32_t unk124 = 0;
-            uint32_t unk128 = 0;
-            uint32_t unk12C = 0;
+            struct { // sizeof >= 0x24
+               uint32_t unk00;
+               uint16_t unk04 = 0;
+               uint32_t unk08;
+               uint32_t unk0C;
+               uint32_t unk10;
+               uint32_t unk14 = 0;
+               uint32_t unk18 = 0;
+               uint32_t unk1C = 0;
+               uint32_t unk20 = 0;
+            } unk10C;
             uint32_t unk130 = 0;
             float    unk134 = 1.0F;
             int32_t  unk138 = -1;
@@ -214,6 +232,17 @@ namespace RE {
             DEFINE_MEMBER_FN(Disenchant, void, 0x008530D0);
             DEFINE_MEMBER_FN(Enchant,    void, 0x00852D70);
             DEFINE_MEMBER_FN(SetItem3D,  void, 0x0084EA60, InventoryEntryData*);
+            DEFINE_MEMBER_FN(Subroutine0084D2B0, void, 0x0084D2B0);
+            DEFINE_MEMBER_FN(Subroutine0084DDB0, void, 0x0084DDB0, uint32_t, uint32_t);
+            DEFINE_MEMBER_FN(Subroutine0084E340, void, 0x0084E340, uint32_t, uint32_t);
+            DEFINE_MEMBER_FN(RebuildItemList,    void, 0x008500C0, uint32_t alwaysOne);
+            //
+            // Enchant consumes a soul gem by way of a call to TESObjectREFR::Unk_56 on the player, at 
+            // 0x00852F4B. It may use a call at 0x00852FBA to notify the player of the soul gem's 
+            // removal as well.
+            //
+            // RebuildItemList uses a single loop to populate unkBC with the player's filled soul gems 
+            // and enchantable weapons and armor.
       };
 
       class SmithingMenu : public CraftingSubMenu { // sizeof == 0xE8, allocated on the Scaleform heap
@@ -221,19 +250,23 @@ namespace RE {
             static constexpr uint32_t vtbl = 0x010E4778;
             //
             struct UnkA8Entry { // sizeof == 0x20
-               uint32_t unk00;
+               InventoryEntryData* unk00;
                uint32_t unk04;
                uint32_t unk08; // 08
-               uint32_t unk0C;
-               uint32_t unk10;
-               float    unk14;
-               float    unk18;
-               uint8_t  unk1C;
-               uint8_t  unk1D;
-               uint8_t  pad1E[2];
+               float    unk0C = 1.0F;
+               float    unk10 = 1.0F; // related to tempering potential
+               float    unk14 = 0;
+               float    unk18 = 0;
+               uint8_t  unk1C; // possibly "is quest item"?
+               bool     unk1D; // set to the result of testing conditions on unk08
+               uint8_t  unk1E = 0;
+               uint8_t  pad1F;
+               //
+               MEMBER_FN_PREFIX(UnkA8Entry);
+               DEFINE_MEMBER_FN(Constructor, UnkA8Entry&, 0x00856490, InventoryEntryData* unk00, uint32_t unk08);
             };
             //
-            tArray<UnkA8Entry> unkA8;
+            tArray<UnkA8Entry> unkA8; // map of items?
             uint32_t unkB4;
             uint32_t unkB8;
             uint32_t unkBC = 0;
@@ -242,7 +275,7 @@ namespace RE {
             void*    unkC8; // initialized to point to 0xDEADBEEF
             uint32_t unkCC;
             uint32_t unkD0 = 0;
-            void*    unkD4; // TESObjectREFR*?
+            void*    unkD4; // TESObjectREFR*? // constructor argument
             uint32_t unkD8 = 0;
             int32_t  unkDC = -1; // int
             uint32_t smithingFormType; // E0
@@ -253,10 +286,10 @@ namespace RE {
             DEFINE_MEMBER_FN(CraftItem, void, 0x00858E20);
             DEFINE_MEMBER_FN(TemperCurrentItem, void, 0x00857520);
             DEFINE_MEMBER_FN(AdvancePlayerSkill, void, 0x008516E0, float by); // inlined in some places including CraftItem
-            DEFINE_MEMBER_FN(Subroutine00857350, void, 0x00857350);
+            DEFINE_MEMBER_FN(Subroutine00857350, void, 0x00857350); // builds the item list?
             DEFINE_MEMBER_FN(Subroutine00857C60, void, 0x00857C60);
-            DEFINE_MEMBER_FN(Subroutine00850C20, void, 0x00850C20); // accesses player inventory; is this what builds the list of items you can use/craft?
-            DEFINE_MEMBER_FN(Subroutine00856F10, void, 0x00856F10); // accesses player inventory; has something to do with displaying a recipe's requirements
+            DEFINE_MEMBER_FN(Subroutine00850C20, void, 0x00850C20); // accesses player inventory; updates the required materials list
+            DEFINE_MEMBER_FN(Subroutine00856F10, void, 0x00856F10); // accesses player inventory; updates the required materials list
       };
    };
 }

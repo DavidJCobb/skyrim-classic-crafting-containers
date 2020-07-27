@@ -53,7 +53,7 @@ namespace RE {
          tree,                     // TREE: TESObjectTREE
          flora,                    // FLOR: TESFlora
          furniture,                // FURN: TESFurniture
-         weapon,                   // WEAP: TESObjectWEAP
+         weapon            = 0x29, // WEAP: TESObjectWEAP
          ammo,                     // AMMO: TESAmmo
          actor_base,               // NPC_: TESNPC
          leveled_character,        // LVLN: TESLevCharacter

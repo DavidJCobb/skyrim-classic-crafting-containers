@@ -79,54 +79,6 @@ namespace RE {
                         if (sever)
                            entry->extendDataList = nullptr;
                      }
-                     /*
-                     if (eList && oList) {
-                        auto* last = &oList->items;
-                        auto* node = &eList->items;
-                        while (last->next)
-                           last = last->next;
-                        if (node) {
-                           bool multiple = !!node->next;
-                           if (!node->next && node->data) {
-                              //
-                              // InventoryEntryData does not retain BaseExtraLists that consist solely of ExtraCount. 
-                              // I don't know if it requires its BaseExtraLists to have an ExtraCount if they cover 
-                              // the entire stack, e.g. if you have a stack of 5 Nightshade with the same owner, I 
-                              // don't know if that stack is required to have an ExtraCount of 5 in its list. So, if 
-                              // (entry) consists of a single BaseExtraList, we're going to require that it have a 
-                              // count before we migrate it over.
-                              //
-                              auto source = (RE::BaseExtraList*)node->data;
-                              if (!CALL_MEMBER_FN(source, HasType)(kExtraData_Count))
-                                 CALL_MEMBER_FN(source, SetExtraCount)(entry->countDelta);
-                           }
-                           do {
-                              CALL_MEMBER_FN(last, append)(&node->data, nullptr, nullptr);
-                              if (last->next) // check, because appends can fail if node->data == nullptr
-                                 last = last->next;
-                           } while (node = node->next);
-                           //
-                           // Hm... Appending individual nodes probably seems pretty slow, eh? Especially when you 
-                           // know that tLists aren't real: a tList's only field is its first node, so technically, 
-                           // there is no difference between a tList and a tList node. You're probably thinking: 
-                           // instead of appending BELs one by one, why don't we just remove the BEL list from the 
-                           // (entry) and tack it right onto the end of the (other)'s BEL list?
-                           //
-                           // Well, (other) can have an empty node at its end -- or, more likely, its initial node 
-                           // can be empty. If we tack (entry)'s BEL list onto that empty node, then we end up with 
-                           // a situation where there's an empty node in the middle of the list... and Bethesda's 
-                           // code doesn't like empty nodes in the middle of singly-linked lists.
-                           //
-                           // Somewhere, deep in the InventoryEntryData code, is a check like this:
-                           //
-                           //    if (node->next || node->data)
-                           //       node->data->YepImSureNodeDataDefinitelyIsNotNull();
-                           //
-                           // Which is, uh,... yeah.
-                           //
-                        }
-                     }
-                     //*/
                   } else {
                      CALL_MEMBER_FN(&this->availableIngredients, InsertAt)(eax, data);
                   }
