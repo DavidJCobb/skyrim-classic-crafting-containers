@@ -13,7 +13,6 @@ namespace Patches {
       void UpdateContainers() { // called by assembly; be careful if changing the function signature
          s_containers.clear();
          ContainerHelper::get_nearby_containers(s_containers);
-         _MESSAGE("CraftingAndSmithing: Updated containers; there are %u.", s_containers.size());
       }
       //
       // In order to change how SmithingMenu and ConstructibleObjectMenu check whether the player has the 
@@ -189,15 +188,44 @@ namespace Patches {
             SafeWrite32(0x00491715 + 4, (UInt32)&Functor); // CraftingSubMenus::ConstructibleObjectMenu::EntryData::AttemptCraft+0x45+0x04
          }
       }
-
-      //
-      // TODO: SmithingMenu: the requirements text still only shows the number of each ingredient that is in the player's inventory
-      //
-
+      namespace DisplayRequiredMaterials {
+         void _stdcall Inner(RE::TESContainer* cont, RE::TESContainer::get_craft_requirements_t& reqs) {
+            auto     player = (*RE::g_thePlayer);
+            uint32_t size   = cont->numEntries;
+            for (uint32_t i = 0; i < size; ++i) {
+               auto*    entry  = cont->entries[i];
+               uint32_t amount = ContainerHelper::non_quest_item_count(player, entry->form);
+               for (auto* container : s_containers)
+                  amount += ContainerHelper::non_quest_item_count(container, entry->form);
+               auto& element = reqs.results.append();
+               element.name     = RE::GetFormName(entry->form);
+               element.count    = amount;
+               element.required = entry->count;
+            }
+         }
+         __declspec(naked) void _stdcall Outer(RE::TESContainer::get_craft_requirements_t&) {
+            //
+            // We are replacing calls to TESContainer::GetCraftRequirementsForDisplay.
+            //
+            _asm {
+               mov  eax, dword ptr [esp + 0x4];
+               mov  eax, dword ptr [eax];
+               push eax;
+               push ecx;
+               call Inner; // stdcall
+               retn 4;
+            }
+         }
+         void Apply() {
+            WriteRelCall(0x00856FA5, (UInt32)&Outer); // CraftingSubMenus::SmithingMenu::UpdateDisplayedRequirements+0x95
+            WriteRelCall(0x00850CB1, (UInt32)&Outer); // CraftingSubMenus::ConstructibleObjectMenu::UpdateDisplayedRequirements+0x91
+         }
+      }
       //
       void Apply() {
          CheckRequiredMaterials::Apply();
          ConsumeRequiredMaterials::Apply();
+         DisplayRequiredMaterials::Apply();
       }
    }
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "skse/GameFormComponents.h"
 #include "ReverseEngineered/Shared.h"
+#include "ReverseEngineered/Types.h"
 
 namespace RE {
    class InventoryChanges;
@@ -35,6 +36,20 @@ namespace RE {
             InventoryChanges* subject = nullptr;
          };
          DEFINE_MEMBER_FN(InventoryHasAllOfMyItems, bool, 0x004915B0, has_all_items_t&); // does not modify the state object if the container is empty
+
+         struct get_craft_requirements_t {
+            struct info {
+               const char* name     = nullptr; // 00
+               uint32_t    count    = 0;       // 04
+               uint32_t    required = 0;       // 08
+            };
+            BSTArray<info>    results; // 00
+            InventoryChanges* source;  // 0C
+            //
+            MEMBER_FN_PREFIX(get_craft_requirements_t);
+            DEFINE_MEMBER_FN(Visit, BOOL, 0x0084EF40, TESForm*, uint32_t countRequired);
+         };
+         DEFINE_MEMBER_FN(GetCraftRequirementsForDisplay, void, 0x00850080, get_craft_requirements_t&);
    };
    namespace TESContainerForEachFunctors {
       static DEFINE_SUBROUTINE(BOOL, RemoveAllOfMyItemsFromPlayer, 0x00491100, TESForm*, uint32_t);

@@ -51,6 +51,14 @@ namespace RE {
       class CraftingSubMenu : public GRefCountImplCore {
          public:
             static constexpr uint32_t vtbl = 0x010E440C;
+            virtual void Dispose(bool); // 00 // virtual destructor
+            virtual void Unk_01(uint32_t); // pure
+            virtual void Unk_02();
+            virtual void Unk_03();
+            virtual bool Unk_04(); // returning true is the default
+            virtual bool Unk_05(uint32_t); // returning false is the default
+            virtual void Unk_06();
+            virtual void Unk_07(uint32_t);
             //
             BSTEventSink<TESFurnitureEvent> eventInterface; // 08 // interface; VTBL: 0x010E4410
             GFxMovieView*   view;  // 0C // initialized based on constructor Arg1; not nullptr; has a vtbl
@@ -72,7 +80,8 @@ namespace RE {
 
             MEMBER_FN_PREFIX(CraftingSubMenu);
             DEFINE_MEMBER_FN(Constructor, CraftingSubMenu&, 0x008505F0, GFxValue*, void*, TESFurniture* unk10);
-            DEFINE_MEMBER_FN(SetDescription, void, 0x0084CC70, const char*);
+            DEFINE_MEMBER_FN(AdvancePlayerSkill,    void, 0x008516E0, float by); // inlined in some places including ConstructibleObjectMenu::CraftItem
+            DEFINE_MEMBER_FN(SetDescription,        void, 0x0084CC70, const char*);
             DEFINE_MEMBER_FN(UpdatePlayerSkillInfo, void, 0x0084C8C0, uint8_t actorValueIndex);
       };
       static_assert(sizeof(CraftingSubMenu) >= 0xA8, "RE::CraftingSubMenus::CraftingSubMenu is too small!");
@@ -198,7 +207,7 @@ namespace RE {
             DEFINE_MEMBER_FN(CraftItem,   void, 0x00858E20);
             DEFINE_MEMBER_FN(Subroutine00857C60, void, 0x00857C60); // builds unkA8 and unkB4
             DEFINE_MEMBER_FN(Subroutine00856230, void, 0x00856230, void*);
-            DEFINE_MEMBER_FN(Subroutine00850C20, void, 0x00850C20); // accesses player inventory; updates the required materials list
+            DEFINE_MEMBER_FN(UpdateDisplayedRequirements, void, 0x00850C20); // accesses player inventory; updates the required materials list
       };
       static_assert(sizeof(ConstructibleObjectMenu) >= 0xE0, "RE::CraftingSubMenus::ConstructibleObjectMenu is too small!");
       static_assert(sizeof(ConstructibleObjectMenu) <= 0xE0, "RE::CraftingSubMenus::ConstructibleObjectMenu is too large!");
@@ -358,12 +367,11 @@ namespace RE {
             MEMBER_FN_PREFIX(SmithingMenu);
             DEFINE_MEMBER_FN(Constructor, SmithingMenu&, 0x008562B0, GFxValue*, uint32_t, uint32_t);
             DEFINE_MEMBER_FN(Destructor, void, 0x008579B0);
-            DEFINE_MEMBER_FN(AdvancePlayerSkill, void, 0x008516E0, float by); // inlined in some places including CraftItem
             DEFINE_MEMBER_FN(RebuildAllLists,    void, 0x00857A60); // populates unkB4 and calls RebuildItemList
             DEFINE_MEMBER_FN(RebuildItemList,    void, 0x00857350); // scans the player's inventory. if unkB4.lookup(item->formID) exists, then the item is added to improveableItems.
             DEFINE_MEMBER_FN(TemperCurrentItem,  void, 0x00857520);
             DEFINE_MEMBER_FN(Subroutine008570D0, void, 0x008570D0, int32_t index); // resets unkE4 based on unkA8[index]
-            DEFINE_MEMBER_FN(Subroutine00856F10, void, 0x00856F10); // accesses player inventory; updates the required materials list
+            DEFINE_MEMBER_FN(UpdateDisplayedRequirements, void, 0x00856F10); // accesses player inventory; updates the required materials list
 
             // We can potentially get the SmithingMenu to pull from arbitrary containers instead of (or 
             // in addition to) the player by:

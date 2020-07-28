@@ -4,6 +4,9 @@
 namespace RE {
    class TESForm;
    class TESObjectREFR;
+   namespace InventoryUtils {
+      class QuestItemFilter;
+   }
 }
 
 namespace ContainerHelper {

@@ -162,6 +162,7 @@
     <None Include="exports.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="helpers\math.h" />
     <ClInclude Include="helpers\rtti.h" />
     <ClInclude Include="helpers\strings.h" />
     <ClInclude Include="Miscellaneous\strings.h" />

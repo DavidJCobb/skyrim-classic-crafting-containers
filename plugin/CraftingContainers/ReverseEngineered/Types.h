@@ -108,6 +108,48 @@ namespace RE {
       DEFINE_MEMBER_FN(SetElements, void, 0x006B0C90, UInt32 index, UInt32 numCopies, NiPointer<NiRefObject>& value); // assumes you've already allocated enough room
       DEFINE_MEMBER_FN(MassDecreaseRefcounts, void, 0x006B0930, UInt32 startIndex, UInt32 endIndex);
    };
+   template<typename T> struct BSTArray {
+      protected:
+         static constexpr int ce_grow_by = 5;
+         //
+         inline void _default_construct_at(uint32_t i) {
+            new (&this->_data[i]) T(); // default-construct in place
+         }
+         //
+      public:
+         T*            _data     = nullptr;
+         uint32_t      _capacity = 0;
+         BSTArrayCount _size     = 0;
+         //
+         inline uint32_t capacity() const noexcept { return this->_capacity; };
+         inline uint32_t size() const noexcept { return this->_size; }
+         //
+         __declspec(noinline) T& append() {
+            if (this->_size + 1 >= this->_capacity)
+               this->reserve(this->_capacity + ce_grow_by);
+            this->_default_construct_at(this->_size);
+            ++this->_size;
+            return this->_data[this->_size - 1];
+         }
+         void push_back(T& item) {
+            this->append();
+            this->_data[this->_size - 1] = item;
+         }
+         __declspec(noinline) void reserve(uint32_t cap) {
+            if (cap <= this->_capacity)
+               return;
+            auto* migrate = FormHeap_Allocate(sizeof(T) * cap);
+            if (this->_data) {
+               memcpy(migrate, this->_data, sizeof(T) * this->_capacity);
+               FormHeap_Free(this->_data);
+            }
+            this->_data     = (T*)migrate;
+            this->_capacity = cap;
+         }
+         //
+         inline T& operator[](int i) noexcept { return this->_data[i]; }
+         inline const T& operator[](int i) const noexcept { return this->_data[i]; }
+   };
 
    template<class T> struct tList {
       //
