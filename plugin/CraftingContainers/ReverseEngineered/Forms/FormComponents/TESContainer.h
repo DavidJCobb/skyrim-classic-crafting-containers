@@ -1,8 +1,9 @@
 #pragma once
 #include "skse/GameFormComponents.h"
-#include "ReverseEngineered/Shared.h""
+#include "ReverseEngineered/Shared.h"
 
 namespace RE {
+   class InventoryChanges;
    class TESForm;
 
    class TESContainer : public BaseFormComponent { // sizeof == 0xC
@@ -27,6 +28,13 @@ namespace RE {
 
          using for_each_functor_t = BOOL(*)(TESForm*, uint32_t count); // return any value other than 1 to stop iterating
          DEFINE_MEMBER_FN(ForEach, void, 0x00491200, for_each_functor_t);
+
+         struct has_all_items_t {
+            bool    result = true;
+            uint8_t pad01[3];
+            InventoryChanges* subject = nullptr;
+         };
+         DEFINE_MEMBER_FN(InventoryHasAllOfMyItems, bool, 0x004915B0, has_all_items_t&); // does not modify the state object if the container is empty
    };
    namespace TESContainerForEachFunctors {
       static DEFINE_SUBROUTINE(BOOL, RemoveAllOfMyItemsFromPlayer, 0x00491100, TESForm*, uint32_t);

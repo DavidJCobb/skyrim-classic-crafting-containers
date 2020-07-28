@@ -4,7 +4,7 @@
 namespace cobb {
    namespace rtti {
       struct class_hierarchy_descriptor;
-      struct type_descriptor;
+      class type_descriptor;
       struct base_class;
 
       struct complete_object_locator {

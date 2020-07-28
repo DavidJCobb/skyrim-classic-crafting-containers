@@ -3,6 +3,7 @@
 #include "ReverseEngineered/Forms/TESObjectREFR.h"
 #include "ReverseEngineered/Player/PlayerCharacter.h"
 #include "ReverseEngineered/Systems/GameData.h"
+#include "ReverseEngineered/Systems/Inventory.h"
 #include "ReverseEngineered/ExtraData.h"
 #include <algorithm>
 
@@ -56,5 +57,13 @@ namespace ContainerHelper {
          auto dist_b = CALL_MEMBER_FN(b, GetDistanceSquared)(player, true, false);
          return dist_a < dist_b;
       });
+   }
+   int32_t non_quest_item_count(RE::TESObjectREFR* refr, RE::TESForm* item) {
+      auto* inventory = RE::GetInventory(refr);
+      if (inventory) {
+         auto filter = RE::InventoryUtils::QuestItemFilter();
+         return CALL_MEMBER_FN(inventory, GetMatchingItemCount)(item, filter);
+      }
+      return 0;
    }
 }

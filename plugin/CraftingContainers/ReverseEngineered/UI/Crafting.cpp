@@ -2,6 +2,7 @@
 #include "ReverseEngineered/Forms/BaseForms/TESObjectARMO.h"
 #include "ReverseEngineered/Forms/BaseForms/TESObjectWEAP.h"
 #include "ReverseEngineered/Forms/TESObjectREFR.h"
+#include "ReverseEngineered/Systems/Inventory.h"
 #include "ReverseEngineered/ExtraData.h"
 
 namespace RE {

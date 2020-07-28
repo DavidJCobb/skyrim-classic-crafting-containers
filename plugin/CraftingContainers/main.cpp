@@ -10,6 +10,7 @@
 //#include "Services/INI.h"
 #include "Patches/Exploratory.h"
 #include "Patches/AlchemyMenu.h"
+#include "Patches/CraftingAndSmithing.h"
 
 #include "skse/GameRTTI.h"
 #include "skse/GameObjects.h"
@@ -76,6 +77,7 @@ extern "C" {
       {  // Patches:
          Patches::Exploratory::Apply();
          Patches::AlchemyMenu::Apply();
+         Patches::CraftingAndSmithing::Apply();
       }
       return true;
    }

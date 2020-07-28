@@ -4,7 +4,7 @@
 namespace Patches {
    namespace Exploratory {
       void Apply() {
-         DumpRTTIsByVTBLs::Apply();
+         //DumpRTTIsByVTBLs::Apply();
       }
    }
 }

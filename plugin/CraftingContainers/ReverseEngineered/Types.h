@@ -209,7 +209,7 @@ namespace RE {
 
    template <typename Key> uint32_t BSTDefaultScatterTableDefaultHashFunction(const Key& key) {
       uint32_t crc;
-      CRC32_Calc4(&crc, key);
+      CRC32_Calc4((UInt32*)&crc, key); // what a stupid cast to have to do
       return crc;
    };
    template <typename Key> using BSTDefaultScatterTableHashFunction = decltype(&BSTDefaultScatterTableDefaultHashFunction<Key>);
@@ -228,7 +228,7 @@ namespace RE {
          class entry_t;
          //
 		protected:
-         static const entry_t* const sentinel_entry_pointer = (const entry_t*)0x012889D8; // (item) == 0xDEADBEEF
+         inline static const entry_t* const sentinel_entry_pointer = (const entry_t*)0x012889D8; // (item) == 0xDEADBEEF
          //
       public:
          using key_type   = Key;
@@ -254,7 +254,7 @@ namespace RE {
          uint32_t fill_count() const noexcept { return this->_size - this->_freeCount; }
          //
          [[nodiscard]] entry_t* entry_by_hash(uint32_t hash) const {
-            return this->_entries ? this->_entries[hash & (size() - 1)] : nullptr;
+            return this->_entries ? &this->_entries[hash & (size() - 1)] : nullptr;
          }
          [[nodiscard]] value_type* lookup(key_type& key) const {
             auto hash = _hash_function(key);

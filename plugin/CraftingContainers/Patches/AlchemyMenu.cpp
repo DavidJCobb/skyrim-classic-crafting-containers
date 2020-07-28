@@ -40,7 +40,8 @@ namespace Patches {
       namespace ConsumeItem {
          RE::BSUntypedPointerHandle& _stdcall Inner(RE::BSUntypedPointerHandle& out, RE::TESForm* item, int32_t count, uint32_t arg4, RE::BaseExtraList* extra, RE::TESObjectREFR* transferTo, bool arg7, bool arg8) {
             auto     player = (*RE::g_thePlayer);
-            uint32_t amount = player->GetItemCountFast(item);
+            //uint32_t amount = player->GetItemCountFast(item);
+            uint32_t amount = ContainerHelper::non_quest_item_count(player, item);
             uint32_t remove;
             if (amount > 0) {
                remove = count > amount ? amount : count;
@@ -52,13 +53,16 @@ namespace Patches {
             std::vector<RE::TESObjectREFR*> containers;
             ContainerHelper::get_nearby_containers(containers);
             for (auto* container : containers) {
-               amount = container->GetItemCountFast(item);
+               //amount = container->GetItemCountFast(item);
+               amount = ContainerHelper::non_quest_item_count(container, item);
                remove = count > amount ? amount : count;
                container->Unk_56(out, item, remove, arg4, extra, transferTo, arg7, arg8);
                if (count <= amount)
                   return out;
                count -= amount;
             }
+            if (count > 0)
+               _MESSAGE("[WARNING] AlchemyMenu: Crafting failed to consume %u of ingredient %08X. Was a container modified?", count, item->formID);
             return out;
          }
          __declspec(naked) void _stdcall Outer() {
