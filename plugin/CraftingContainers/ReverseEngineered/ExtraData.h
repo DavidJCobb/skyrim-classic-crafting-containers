@@ -175,14 +175,15 @@ namespace RE {
          DEFINE_MEMBER_FN(Destructor, void, 0x00475110);
          DEFINE_MEMBER_FN(AbandonExtraData,    void, 0x00476A70); // use this instead of (Destructor) if your InventoryEntryData is a shallow copy
          DEFINE_MEMBER_FN(AppendExtraDataList, void, 0x00476BA0, ExtraDataList*, bool simplifyFirst); // if (simplifyFirst == true), then runs an (inlined) call to SimplifyExtendDataList before appending
-         DEFINE_MEMBER_FN(GenerateName,  const char*, 0x00475AA0);
-         DEFINE_MEMBER_FN(GetFirstOwner, void*,  0x004755A0); // returns this->extendDataList[0]->GetExtraOwnership()
-         DEFINE_MEMBER_FN(GetSoulLevel,  SInt32, 0x00475740); // charge amount
-         DEFINE_MEMBER_FN(GetSoulSize,   UInt32, 0x004756F0); // enum
-         DEFINE_MEMBER_FN(GetValue,      SInt32, 0x00475450);
-         DEFINE_MEMBER_FN(IsQuestObject, bool,   0x004759B0);
-         DEFINE_MEMBER_FN(IsOwnedBy,     bool,   0x00477010, TESForm* actor, bool unk1);
-         DEFINE_MEMBER_FN(IsWorn,        bool,   0x004758C0); // checks extra data
+         DEFINE_MEMBER_FN(GenerateName,    const char*, 0x00475AA0);
+         DEFINE_MEMBER_FN(GetFirstOwner,   void*,  0x004755A0); // returns this->extendDataList[0]->GetExtraOwnership()
+         DEFINE_MEMBER_FN(GetSoulLevel,    SInt32, 0x00475740); // charge amount
+         DEFINE_MEMBER_FN(GetSoulSize,     UInt32, 0x004756F0); // enum
+         DEFINE_MEMBER_FN(GetTemperHealth, float,  0x00475360); // returns the highest ExtraHealth, or 1.0F if that's larger
+         DEFINE_MEMBER_FN(GetValue,        SInt32, 0x00475450);
+         DEFINE_MEMBER_FN(IsQuestObject,   bool,   0x004759B0);
+         DEFINE_MEMBER_FN(IsOwnedBy,       bool,   0x00477010, TESForm* actor, bool unk1);
+         DEFINE_MEMBER_FN(IsWorn,          bool,   0x004758C0); // checks extra data
          DEFINE_MEMBER_FN(SimplifyExtendDataList, int32_t, 0x00476D80); // removes any BaseExtraLists that consist solely of ExtraCount. return value is an integer; meaning is unclear.
          DEFINE_MEMBER_FN(Subroutine004751F0, bool, 0x004751F0);
 

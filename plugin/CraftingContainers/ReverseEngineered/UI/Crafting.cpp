@@ -1,9 +1,12 @@
 #include "Crafting.h"
+#include "ReverseEngineered/Forms/BaseForms/TESObjectARMO.h"
+#include "ReverseEngineered/Forms/BaseForms/TESObjectWEAP.h"
 #include "ReverseEngineered/Forms/TESObjectREFR.h"
 #include "ReverseEngineered/ExtraData.h"
 
 namespace RE {
    namespace CraftingSubMenus {
+      #pragma region AlchemyMenu
       void AlchemyMenu::ImportIngredientsFrom(TESObjectREFR* container, bool merge) {
          auto count = CALL_MEMBER_FN(container, CountItemTypes)(false, true);
          for (uint32_t index = 0; index < count; ++index) {
@@ -117,5 +120,23 @@ namespace RE {
          //
          return f(this->availableIngredients, ed, 0x0084D770, exists);
       }
+      #pragma endregion
+
+      #pragma region SmithingMenu
+      BGSConstructibleObject* SmithingMenu::get_cobj_for(TESForm* item) const {
+         auto result = this->get_cobj_for(item->formID);
+         if (!result) {
+            if (item->formType == form_type::weapon)
+               item = ((RE::TESObjectWEAP*)item)->templateForm;
+            else if (item->formType == form_type::armor)
+               item = (RE::TESForm*) ((RE::TESObjectARMO*)item)->templateArmor;
+            else
+               return nullptr;
+            if (item)
+               result = this->get_cobj_for(item->formID);
+         }
+         return result;
+      }
+      #pragma endregion
    }
 }

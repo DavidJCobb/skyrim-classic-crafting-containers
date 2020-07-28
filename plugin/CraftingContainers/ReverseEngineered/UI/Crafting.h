@@ -162,6 +162,8 @@ namespace RE {
             void ImportIngredientsFrom(TESObjectREFR* container, bool merge = false); // does not update UI state; just adds to availableIngredients
             int32_t GetIndexOfIngredientName(EntryData& ed, bool& exists);
       };
+      static_assert(sizeof(AlchemyMenu) >= 0x100, "RE::CraftingSubMenus::AlchemyMenu is too small!");
+      static_assert(sizeof(AlchemyMenu) <= 0x100, "RE::CraftingSubMenus::AlchemyMenu is too large!");
       static_assert(offsetof(AlchemyMenu, selections) >= 0xB4, "RE::CraftingSubMenus::AlchemyMenu::selections is too early!");
       static_assert(offsetof(AlchemyMenu, selections) <= 0xB4, "RE::CraftingSubMenus::AlchemyMenu::selections is too late!");
       static_assert(offsetof(AlchemyMenu, unkC8) >= 0xC8, "RE::CraftingSubMenus::AlchemyMenu::unkC8 is too early!");
@@ -194,7 +196,10 @@ namespace RE {
             DEFINE_MEMBER_FN(CraftItem,   void, 0x00858E20);
             DEFINE_MEMBER_FN(Subroutine00857C60, void, 0x00857C60); // builds unkA8 and unkB4
             DEFINE_MEMBER_FN(Subroutine00856230, void, 0x00856230, void*);
+            DEFINE_MEMBER_FN(Subroutine00850C20, void, 0x00850C20); // accesses player inventory; updates the required materials list
       };
+      static_assert(sizeof(ConstructibleObjectMenu) >= 0xE0, "RE::CraftingSubMenus::ConstructibleObjectMenu is too small!");
+      static_assert(sizeof(ConstructibleObjectMenu) <= 0xE0, "RE::CraftingSubMenus::ConstructibleObjectMenu is too large!");
 
       class EnchantConstructMenu : public CraftingSubMenu { // sizeof == 0x158, allocated on the Scaleform heap
          public:
@@ -284,10 +289,22 @@ namespace RE {
             // RebuildItemList uses a single loop to populate unkBC with the player's filled soul gems 
             // and enchantable weapons and armor.
       };
+      static_assert(sizeof(EnchantConstructMenu) >= 0x158, "RE::CraftingSubMenus::EnchantConstructMenu is too small!");
+      static_assert(sizeof(EnchantConstructMenu) <= 0x158, "RE::CraftingSubMenus::EnchantConstructMenu is too large!");
 
       class SmithingMenu : public CraftingSubMenu { // sizeof == 0xE8, allocated on the Scaleform heap
          //
          // Only used for tempering existing items; for crafting, see ConstructibleObjectMenu.
+         //
+         // Items use ExtraHealth to store how much they've been tempered. For the purposes of tempering, 
+         // the minimum value is 1.0F.
+         //
+         // AlchemyMenu iterates over the player's inventory and stores a list of all of their crafting 
+         // materials. SmithingMenu doesn't appear to behave in quite the same way; it stores lists of 
+         // all COBJs available to the current workbench, and of all of the player's improveable items, 
+         // but it doesn't store a list of materials. Rather, when the (improveableItems) list is being 
+         // filled, BGSConstructibleObject::PlayerHasNeededItems is called in the list item constructor, 
+         // and that accesses the player's inventory to see if they have the needed supplies.
          //
          public:
             static constexpr uint32_t vtbl = 0x010E4778;
@@ -304,20 +321,20 @@ namespace RE {
             };
             //
             struct UnkA8Entry { // sizeof == 0x20
-               InventoryEntryData* unk00; // 00
+               InventoryEntryData* item; // 00
                uint32_t unk04;
-               uint32_t unk08; // 08 // if == 0, then cannot temper the item
-               float    unk0C = 1.0F; // related to ExtraHealth
+               BGSConstructibleObject* recipe; // 08 // if == nullptr, then cannot temper the item
+               float    currentTempering = 1.0F; // 0C
                float    unk10 = 1.0F; // related to ExtraHealth // related to tempering potential
                float    unk14 = 0;
                float    unk18 = 0;
-               bool     unk1C; // possibly "is quest item" or more generally "cannot improve this item"
-               bool     conditionsMet; // 1D // the conditions on the COBJ are met (tempering only?)
+               bool     playerHasNeededItems;  // 1C // == this->unk08->PlayerHasNeededItems();
+               bool     playerMeetsConditions; // 1D // == this->unk08->PlayerMeetsConditions();
                bool     unk1E = false; // possibly "is selected"
                uint8_t  pad1F;
                //
                MEMBER_FN_PREFIX(UnkA8Entry);
-               DEFINE_MEMBER_FN(Constructor, UnkA8Entry&, 0x00856490, InventoryEntryData* unk00, uint32_t unk08);
+               DEFINE_MEMBER_FN(Constructor, UnkA8Entry&, 0x00856490, InventoryEntryData* item, BGSConstructibleObject* unk08);
             };
             struct UnkB4Entry { // sizeof == 0x08?
                uint32_t unk00;  // 00
@@ -334,17 +351,32 @@ namespace RE {
             inline BGSConstructibleObject* get_cobj_for(uint32_t formID) const {
                return *this->recipes.table.lookup(formID);
             }
+            BGSConstructibleObject* get_cobj_for(TESForm*) const; // based on vanilla; accounts for weapons' and armors' template forms
             //
             MEMBER_FN_PREFIX(SmithingMenu);
             DEFINE_MEMBER_FN(Constructor, SmithingMenu&, 0x008562B0, GFxValue*, uint32_t, uint32_t);
             DEFINE_MEMBER_FN(Destructor, void, 0x008579B0);
             DEFINE_MEMBER_FN(AdvancePlayerSkill, void, 0x008516E0, float by); // inlined in some places including CraftItem
+            DEFINE_MEMBER_FN(RebuildAllLists,    void, 0x00857A60); // populates unkB4 and calls RebuildItemList
             DEFINE_MEMBER_FN(RebuildItemList,    void, 0x00857350); // scans the player's inventory. if unkB4.lookup(item->formID) exists, then the item is added to improveableItems.
             DEFINE_MEMBER_FN(TemperCurrentItem,  void, 0x00857520);
             DEFINE_MEMBER_FN(Subroutine008570D0, void, 0x008570D0, int32_t index); // resets unkE4 based on unkA8[index]
-            DEFINE_MEMBER_FN(Subroutine00850C20, void, 0x00850C20); // accesses player inventory; updates the required materials list
             DEFINE_MEMBER_FN(Subroutine00856F10, void, 0x00856F10); // accesses player inventory; updates the required materials list
-            DEFINE_MEMBER_FN(Subroutine00857A60, void, 0x00857A60); // populates unkB4 and calls RebuildItemList
+
+            // We can potentially get the SmithingMenu to pull from arbitrary containers instead of (or 
+            // in addition to) the player by:
+            //
+            //  - Patch BGSConstructibleObject::PlayerHasNeededItems to search additional containers for 
+            //    needed crafting materials. We'll probably have to completely shim that function and 
+            //    reimplement its logic, so that we can properly handle the case of the needed items 
+            //    being spread out across multiple different containers.
+            //
+            //  - TemperCurrentItem removes all of a BGSConstructibleObject's required materials from 
+            //    the player by way of a call to TESContainer::ForEach, passing a functor that calls 
+            //    TESObjectREFR::Unk_56 on *g_thePlayer. We need to patch the call to use a functor 
+            //    that we provide.
       };
+      static_assert(sizeof(SmithingMenu) >= 0xE8, "RE::CraftingSubMenus::SmithingMenu is too small!");
+      static_assert(sizeof(SmithingMenu) <= 0xE8, "RE::CraftingSubMenus::SmithingMenu is too large!");
    };
 }

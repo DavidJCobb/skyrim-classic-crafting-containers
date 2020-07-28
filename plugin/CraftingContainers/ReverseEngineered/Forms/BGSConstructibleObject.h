@@ -18,8 +18,7 @@ namespace RE {// 30
       public:
          static constexpr form_type_t form_type = form_type::constructible_object;
          //
-         // Members:
-         TESContainer container;     // 14 // not inherited
+         TESContainer requirements;  // 14 // materials that must be spent to use this recipe
          void*        conditions;    // 20 // linked list
          TESForm*     createdObject; // 24
          BGSKeyword*  workbenchKeyword; // 28
@@ -27,6 +26,8 @@ namespace RE {// 30
          uint16_t     pad2E;         // 2E
          //
          MEMBER_FN_PREFIX(BGSConstructibleObject);
-         DEFINE_MEMBER_FN(CanCraftAtWorkbench, bool, 0x00491050, TESFurniture*, bool checkConditions);
+         DEFINE_MEMBER_FN(CanCraftAtWorkbench,   bool, 0x00491050, TESFurniture*, bool checkConditions);
+         DEFINE_MEMBER_FN(PlayerHasNeededItems,  bool, 0x00491690); // accesses the player's inventory to see if they have all of the needed materials
+         DEFINE_MEMBER_FN(PlayerMeetsConditions, bool, 0x004910A0);
    };
 }

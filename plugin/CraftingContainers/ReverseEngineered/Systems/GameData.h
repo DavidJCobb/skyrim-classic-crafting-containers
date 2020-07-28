@@ -321,7 +321,7 @@ namespace RE {
          UInt32  unk68C = 0; // 68C // "next ID" to load a form into? gets called by TESForm::TESForm(). gets set to 0xFF000800 after load?
          UInt32  unk690;  // 690
          ModList modList; // 694
-         UInt32 moreunks[100];                            // 0A9C
+         UInt32  unkA9C[100]; // 0A9C
          //
          MEMBER_FN_PREFIX(TESDataHandler);
          DEFINE_MEMBER_FN(GetAvailableLoadingScreens, void, 0x0086F510, UInt8 formTypeForLoadingScreens_WeWillCrashOtherwise, void* list);
@@ -340,7 +340,7 @@ namespace RE {
          DEFINE_MEMBER_FN(GetWorkbenchCOBJArray, void, 0x0084F380, UInt32 shouldBeCOBJFormType, _COBJRequestArray&); // checks conditions
          //
          struct _COBJRequestHashMap {
-            BSTHashMap<uint32_t, CraftingSubMenus::SmithingMenu::UnkB4Entry>* map; // 00
+            BSTHashMap<uint32_t, BGSConstructibleObject*>* map; // 00 // maps an item form ID to the recipe that can be used to create/improve it
             TESFurniture* workbench; // 04
          };
          DEFINE_MEMBER_FN(GetWorkbenchCOBJMap, void, 0x008572C0, UInt32 shouldBeCOBJFormType, _COBJRequestHashMap&); // does not check conditions
