@@ -183,6 +183,8 @@ namespace RE {
             struct EntryData {
                BGSConstructibleObject* form = nullptr; // 00
                uint32_t filter = 0; // 04
+               //
+               DEFINE_MEMBER_FN(AttemptCraft, bool, 0x004916D0); // rechecks the player's inventory for required items and returns true if crafting succeeds
             };
             //
             tArray<EntryData> unkA8; // A8

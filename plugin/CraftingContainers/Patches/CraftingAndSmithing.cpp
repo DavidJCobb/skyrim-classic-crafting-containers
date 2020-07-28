@@ -92,7 +92,7 @@ namespace Patches {
             }
          }
          //
-         bool _stdcall Inner(RE::TESContainer* requirements) {
+         bool _stdcall Check(RE::TESContainer* requirements) {
             auto*    player = *RE::g_thePlayer;
             uint32_t size   = requirements->numEntries;
             for (uint32_t i = 0; i < size; ++i) {
@@ -119,11 +119,31 @@ namespace Patches {
             }
             return true;
          }
+         __declspec(naked) void Outer_OnBeforeCraft() {
+            //
+            // Both the crafting and tempering menus double-check whether the player is allowed to act 
+            // on a recipe at the instant the player attempts to do so. However, the crafting menu's 
+            // call to BGSConstructibleObject::PlayerHasNeededItems is inlined, so we have to patch it 
+            // a little differently.
+            //
+            // This patch will replace a call to TESContainer::InventoryHasAllOfMyItems where the 
+            // "container" in question is the COBJ's list of required materials.
+            //
+            _asm {
+               push ecx;
+               call Check; // stdcall
+               retn 4;
+            }
+         }
          __declspec(naked) void Outer() {
+            //
+            // This is used to just straight-up replace BGSConstructibleObject::PlayerHasNeededItems 
+            // as a function.
+            //
             _asm {
                lea  ecx, [ecx + 0x14]; // ecx = &this->requirements;
                push ecx;
-               call Inner; // stdcall
+               call Check; // stdcall
                retn;
             }
          }
@@ -133,45 +153,40 @@ namespace Patches {
             WriteRelJump(0x00491690, (UInt32)&Outer); // replace BGSConstructibleObject::PlayerHasNeededItems
             SafeWrite16 (0x00491690 + 5, 0x9090);
             SafeWrite8  (0x00491690 + 7, 0x90);
+            //
+            WriteRelCall(0x00491703, (UInt32)&Outer_OnBeforeCraft); // CraftingSubMenus::ConstructibleObjectMenu::EntryData::AttemptCraft+0x33
          }
       }
       namespace ConsumeRequiredMaterials {
-         namespace Crafting {
-         }
-         namespace Tempering {
-            BOOL Functor(RE::TESForm* item, uint32_t count) {
-               RE::BSUntypedPointerHandle handle;
-               //
-               auto     player = (*RE::g_thePlayer);
-               uint32_t amount = ContainerHelper::non_quest_item_count(player, item);
-               uint32_t remove;
-               if (amount > 0) {
-                  remove = count > amount ? amount : count;
-                  player->Unk_56(handle, item, remove, 0, nullptr, nullptr, false, false);
-                  if (count <= amount)
-                     return true;
-                  count -= amount;
-               }
-               for (auto* container : s_containers) {
-                  amount = ContainerHelper::non_quest_item_count(container, item);
-                  remove = count > amount ? amount : count;
-                  container->Unk_56(handle, item, remove, 0, nullptr, nullptr, false, false);
-                  if (count <= amount)
-                     return true;
-                  count -= amount;
-               }
-               if (count > 0)
-                  _MESSAGE("[WARNING] SmithingMenu: Tempering failed to consume %u of ingredient %08X. Was a container modified?", count, item->formID);
-               return true;
+         BOOL Functor(RE::TESForm* item, uint32_t count) {
+            RE::BSUntypedPointerHandle handle;
+            //
+            auto     player = (*RE::g_thePlayer);
+            uint32_t amount = ContainerHelper::non_quest_item_count(player, item);
+            uint32_t remove;
+            if (amount > 0) {
+               remove = count > amount ? amount : count;
+               player->Unk_56(handle, item, remove, 0, nullptr, nullptr, false, false);
+               if (count <= amount)
+                  return true;
+               count -= amount;
             }
-            void Apply() {
-               // MOV DWORD PTR [ESP + 0x10], REPLACE_THIS_DWORD;
-               SafeWrite32(0x0085757F + 4, (UInt32)&Functor); // CraftingSubMenus::SmithingMenu::TemperCurrentItem+0x5F+0x04
+            for (auto* container : s_containers) {
+               amount = ContainerHelper::non_quest_item_count(container, item);
+               remove = count > amount ? amount : count;
+               container->Unk_56(handle, item, remove, 0, nullptr, nullptr, false, false);
+               if (count <= amount)
+                  return true;
+               count -= amount;
             }
+            if (count > 0)
+               _MESSAGE("[WARNING] SmithingMenu: Tempering failed to consume %u of ingredient %08X. Was a container modified?", count, item->formID);
+            return true;
          }
-         //
          void Apply() {
-            Tempering::Apply();
+            // MOV DWORD PTR [ESP + 0x10], REPLACE_THIS_DWORD;
+            SafeWrite32(0x0085757F + 4, (UInt32)&Functor); // CraftingSubMenus::SmithingMenu::TemperCurrentItem+0x5F+0x04
+            SafeWrite32(0x00491715 + 4, (UInt32)&Functor); // CraftingSubMenus::ConstructibleObjectMenu::EntryData::AttemptCraft+0x45+0x04
          }
       }
 

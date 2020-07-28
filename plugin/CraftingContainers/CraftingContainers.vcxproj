@@ -117,6 +117,7 @@
     <ClCompile Include="Patches\AlchemyMenu.cpp" />
     <ClCompile Include="Patches\Exploratory.cpp" />
     <ClCompile Include="Patches\ExploratoryPatches\DumpRTTIsByVTBL.cpp" />
+    <ClCompile Include="Patches\CraftingAndSmithing.cpp" />
     <ClCompile Include="ReverseEngineered\ExtraData.cpp" />
     <ClCompile Include="ReverseEngineered\Forms\Actor.cpp" />
     <ClCompile Include="ReverseEngineered\Forms\ActorValueInfo.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="ReverseEngineered\Systems\BSTEvent.cpp" />
     <ClCompile Include="ReverseEngineered\Systems\DefaultObjects.cpp" />
     <ClCompile Include="ReverseEngineered\Systems\GameData.cpp" />
+    <ClCompile Include="ReverseEngineered\Systems\Inventory.cpp" />
     <ClCompile Include="ReverseEngineered\Systems\Main.cpp" />
     <ClCompile Include="ReverseEngineered\Systems\Sound.cpp" />
     <ClCompile Include="ReverseEngineered\Systems\Timing.cpp" />
@@ -169,6 +171,7 @@
     <ClInclude Include="Patches\AlchemyMenu.h" />
     <ClInclude Include="Patches\Exploratory.h" />
     <ClInclude Include="Patches\ExploratoryPatches\DumpRTTIsByVTBLs.h" />
+    <ClInclude Include="Patches\CraftingAndSmithing.h" />
     <ClInclude Include="ReverseEngineered\ExtraData.h" />
     <ClInclude Include="ReverseEngineered\Forms\Actor.h" />
     <ClInclude Include="ReverseEngineered\Forms\ActorValueInfo.h" />
@@ -260,6 +263,7 @@
     <ClInclude Include="ReverseEngineered\Systems\GameData.h" />
     <ClInclude Include="ReverseEngineered\Systems\GameInput.h" />
     <ClInclude Include="ReverseEngineered\Systems\GameResources.h" />
+    <ClInclude Include="ReverseEngineered\Systems\Inventory.h" />
     <ClInclude Include="ReverseEngineered\Systems\Magic.h" />
     <ClInclude Include="ReverseEngineered\Systems\Main.h" />
     <ClInclude Include="ReverseEngineered\Systems\MiscStats.h" />
