@@ -61,7 +61,7 @@ namespace RE {
          potion,                   // ALCH: AlchemyItem
          idle_marker       = 0x2F, // IDLM: BGSIdleMarker
          note              = 0x30, // NOTE: BGSNote
-         recipe,                   // COBJ: Constructible Object
+         constructible_object,     // COBJ: BGSConstructibleObject
          projectile,               // PROJ: BGSProjectile
          hazard,                   // HAZD: BGSHazard
          soul_gem,                 // SLGM: TESSoulGem

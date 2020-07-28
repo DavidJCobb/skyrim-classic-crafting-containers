@@ -31,6 +31,7 @@ namespace RE {
    //
    struct BSUntypedPointerHandle;
    class DecalGroup;
+   class ExtraDataList;
    class TESNPC;
    class TESObjectREFR;
    //
@@ -39,6 +40,7 @@ namespace RE {
          UInt32 id; // 08
    };
    //
+   #pragma region A
    class ExtraAction : public BSExtraData { // sizeof: 0x10
       public:
          ExtraAction(); // vanilla constructor at 0x00422650.
@@ -125,6 +127,8 @@ namespace RE {
          };
          Entry firstEntry; // 08 // first entry in linked list
    };
+   #pragma endregion
+   #pragma region C
    class ExtraCellAcousticSpace : public BSExtraData { // sizeof == 0xC
       public:
          BGSAcousticSpace* data; // 08
@@ -157,16 +161,20 @@ namespace RE {
          //
          static ExtraCollisionData* Create();
    };
+   #pragma endregion
    //
    class InventoryEntryData { // sizeof == 0xC
       public:
          TESForm* type; // 00
-         tList<BaseExtraList>* extendDataList; // 04 // TODO: this is a singly-linked list, not a doubly-linked list
+         tList<ExtraDataList>* extendDataList; // 04 // TODO: this is a singly-linked list, not a doubly-linked list
          SInt32   countDelta; // 08
 
          MEMBER_FN_PREFIX(InventoryEntryData);
-         DEFINE_MEMBER_FN(Constructor, InventoryEntryData&, 0x004750C0, TESForm*, int32_t count);
+         DEFINE_MEMBER_FN(Constructor_Copy, InventoryEntryData&, 0x00476AB0, const InventoryEntryData&); // copy-construct (this is a deep copy)
+         DEFINE_MEMBER_FN(Constructor,      InventoryEntryData&, 0x004750C0, TESForm*, int32_t count);
          DEFINE_MEMBER_FN(Destructor, void, 0x00475110);
+         DEFINE_MEMBER_FN(AbandonExtraData,    void, 0x00476A70); // use this instead of (Destructor) if your InventoryEntryData is a shallow copy
+         DEFINE_MEMBER_FN(AppendExtraDataList, void, 0x00476BA0, ExtraDataList*, bool simplifyFirst); // if (simplifyFirst == true), then runs an (inlined) call to SimplifyExtendDataList before appending
          DEFINE_MEMBER_FN(GenerateName,  const char*, 0x00475AA0);
          DEFINE_MEMBER_FN(GetFirstOwner, void*,  0x004755A0); // returns this->extendDataList[0]->GetExtraOwnership()
          DEFINE_MEMBER_FN(GetSoulLevel,  SInt32, 0x00475740); // charge amount
@@ -177,7 +185,6 @@ namespace RE {
          DEFINE_MEMBER_FN(IsWorn,        bool,   0x004758C0); // checks extra data
          DEFINE_MEMBER_FN(SimplifyExtendDataList, int32_t, 0x00476D80); // removes any BaseExtraLists that consist solely of ExtraCount. return value is an integer; meaning is unclear.
          DEFINE_MEMBER_FN(Subroutine004751F0, bool, 0x004751F0);
-         DEFINE_MEMBER_FN(AbandonExtraData, void, 0x00476A70);
 
          ~InventoryEntryData() { CALL_MEMBER_FN(this, Destructor)(); }
          inline void Delete() {
@@ -282,6 +289,7 @@ namespace RE {
    static DEFINE_SUBROUTINE(ExtraContainerChanges::Data*, GetExtraContainerChangesData,            0x00476800, TESObjectREFR*);
    static DEFINE_SUBROUTINE(ExtraContainerChanges::Data*, GetOrCreateExtraContainerChangesDataFor, 0x00477780, TESObjectREFR*);
    //
+   #pragma region D
    class ExtraDismemberedLimbs : public BSExtraData { // sizeof == 0x24 -- smaller than in FO3
       public:
          enum DismembermentBits : UInt16 { // these are (1 << BGSBodyPartData::PartType).
@@ -318,6 +326,8 @@ namespace RE {
          };
          Entry firstEntry; // 08 // first entry in linked list
    };
+   #pragma endregion
+   #pragma region E
    class ExtraEditorID : public BSExtraData { // sizeof == 0xC
       public:
          BSFixedString data; // 08
@@ -345,6 +355,7 @@ namespace RE {
          UInt32 unk08;        // 08 // first child handle? or flags?
          Entry* firstEntry;   // 0C // are we sure there's a linked list here? I mean, why would there be?
    };
+   #pragma endregion
    class ExtraFlags : public BSExtraData { // sizeof == 0xC
       public:
          ExtraFlags();
@@ -369,6 +380,7 @@ namespace RE {
          bool isGhost;   // 08
          UInt8 pad09[3];
    };
+   #pragma region L
    class ExtraLeveledCreature : public BSExtraData {
       public:
          virtual ~ExtraLeveledCreature();
@@ -426,6 +438,8 @@ namespace RE {
          MEMBER_FN_PREFIX(ExtraLock);
          DEFINE_MEMBER_FN(Subroutine00422390, SInt32, 0x00422390, TESObjectREFR*); // returns lock level?
    };
+   #pragma endregion
+   #pragma region M
    class ExtraMapMarker : public BSExtraData {
       public:
          enum {
@@ -556,10 +570,12 @@ namespace RE {
          DEFINE_MEMBER_FN(FindFormByID, bool, 0x00414640, UInt32 formID, UInt32* outItemUnk04);
          DEFINE_MEMBER_FN(AppendItem,   void, 0x004277A0, UInt32 formID, UInt32 itemUnk04);
    };
+   #pragma endregion
    class ExtraNorthRotation : public BSExtraData { // sizeof == 0xC
       public:
          float northRotation;
    };
+   #pragma region P
    class ExtraPackage : public BSExtraData { // sizeof == 0x18
       public:
          struct Data { // sizeof == 0x10
@@ -611,6 +627,8 @@ namespace RE {
          //
          static ExtraPrimitive* Create();
    };
+   #pragma endregion
+   #pragma region R
    class ExtraRadius : public BSExtraData {
       public:
          ExtraRadius();
@@ -628,6 +646,8 @@ namespace RE {
          };
          Entry firstEntry; // 08 // first entry in linked list
    };
+   #pragma endregion
+   #pragma region S
    class ExtraShouldWear : public BSExtraData {
       public:
          struct Data {
@@ -684,6 +704,8 @@ namespace RE {
       public:
          void* startingWorldOrCell; // 08
    };
+   #pragma endregion
+   #pragma region T
    class ExtraTeleport : public BSExtraData { // sizeof: 0x0C
       public:
          //
@@ -711,6 +733,7 @@ namespace RE {
          //
          UInt32 unk08;
    };
+   #pragma endregion
    class ExtraWaterData : public BSExtraData {
       public:
          struct Unk08 {
@@ -899,6 +922,7 @@ namespace RE {
          DEFINE_MEMBER_FN(SetExtraFlags,                    void,             0x00416C50, UInt32 flagsMask, bool value); // Creates the new extra-data if needed.
          DEFINE_MEMBER_FN(SetExtraForcedTargetRefHandle,    void,             0x00413F30, UInt32);
          DEFINE_MEMBER_FN(SetExtraGhost,                    ExtraGhost*,      0x0040C940, bool isGhost); // Sets the ghost flag. Creates the new extra-data if needed.
+         DEFINE_MEMBER_FN(SetExtraHealth, void, 0x0040FC10, float health); // health == -1.0F results in removing the extra data
          DEFINE_MEMBER_FN(SetExtraItemDropper, void, 0x00415420, TESObjectREFR*); // Set who dropped this item.
          DEFINE_MEMBER_FN(SetExtraLock,                     ExtraLock*,       0x0040C560, void*);        // Deletes the unk08 on any existing lock data, and then sets a new unk08 pointer. Creates the new extra-data if needed.
          DEFINE_MEMBER_FN(SetExtraMapMarkerData,            void,             0x0040F960, ExtraMapMarker::Data*); // If argument is NULL, deletes existing data.
@@ -907,7 +931,14 @@ namespace RE {
          DEFINE_MEMBER_FN(SetExtraStartingWorldOrCell,      void,             0x00414DA0, void* startingWorldOrCell); // If argument is NULL, deletes existing data.
          DEFINE_MEMBER_FN(SetExtraTimeLeft,                 ExtraTimeLeft*,   0x0040C6E0, UInt32);       // Creates the new extra-data if needed.
    };
-   class ExtraDataList : public BaseExtraList { // ExtraDataList assumed to extend BaseExtraList. This is unconfirmed.
+   class ExtraDataList : public BaseExtraList {
+      //
+      // Does the type "BaseExtraList" ever actually appear anywhere? It seems like ExtraDataList is 
+      // the same class: instances of ExtraDataList are constructed just by calling the constructor 
+      // for BaseExtraList.
+      //
+      // The name "ExtraDataList" appears in some debug strings.
+      //
       public:
          DEFINE_MEMBER_FN(CompareListForContainer,          bool, 0x0040BDF0, BaseExtraList* other, UInt32 unknown); // Returns true if both lists have the exact same contents in the same order; false otherwise.
          DEFINE_MEMBER_FN(RemoveAllCopyableExtra,           void, 0x0040B940, UInt32 unknown);                       // Haven't looked into this. Name comes from a debug logging command.

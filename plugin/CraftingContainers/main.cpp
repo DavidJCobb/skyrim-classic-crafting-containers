@@ -74,6 +74,7 @@ extern "C" {
       _MESSAGE("Load.");
       //SkyrimOutfitSystem::INISettingManager::GetInstance().Load();
       {  // Patches:
+         Patches::Exploratory::Apply();
          Patches::AlchemyMenu::Apply();
       }
       return true;

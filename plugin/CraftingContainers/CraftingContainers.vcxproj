@@ -116,6 +116,7 @@
     <ClCompile Include="Miscellaneous\utf8string.cpp" />
     <ClCompile Include="Patches\AlchemyMenu.cpp" />
     <ClCompile Include="Patches\Exploratory.cpp" />
+    <ClCompile Include="Patches\ExploratoryPatches\DumpRTTIsByVTBL.cpp" />
     <ClCompile Include="ReverseEngineered\ExtraData.cpp" />
     <ClCompile Include="ReverseEngineered\Forms\Actor.cpp" />
     <ClCompile Include="ReverseEngineered\Forms\ActorValueInfo.cpp" />
@@ -159,6 +160,7 @@
     <None Include="exports.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="helpers\rtti.h" />
     <ClInclude Include="helpers\strings.h" />
     <ClInclude Include="Miscellaneous\strings.h" />
     <ClInclude Include="Miscellaneous\tests.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="Miscellaneous\utf8string.h" />
     <ClInclude Include="Patches\AlchemyMenu.h" />
     <ClInclude Include="Patches\Exploratory.h" />
+    <ClInclude Include="Patches\ExploratoryPatches\DumpRTTIsByVTBLs.h" />
     <ClInclude Include="ReverseEngineered\ExtraData.h" />
     <ClInclude Include="ReverseEngineered\Forms\Actor.h" />
     <ClInclude Include="ReverseEngineered\Forms\ActorValueInfo.h" />
@@ -180,6 +183,7 @@
     <ClInclude Include="ReverseEngineered\Forms\BaseForms\TESObjectWEAP.h" />
     <ClInclude Include="ReverseEngineered\Forms\BGSAcousticSpace.h" />
     <ClInclude Include="ReverseEngineered\Forms\BGSBodyPartData.h" />
+    <ClInclude Include="ReverseEngineered\Forms\BGSConstructibleObject.h" />
     <ClInclude Include="ReverseEngineered\Forms\BGSEncounterZone.h" />
     <ClInclude Include="ReverseEngineered\Forms\BGSEquipSlot.h" />
     <ClInclude Include="ReverseEngineered\Forms\BGSLightingTemplate.h" />

@@ -1,11 +1,14 @@
 #pragma once
 #include <cstdint>
 #include "ReverseEngineered/UI/IMenu.h"
+#include "ReverseEngineered/UI/Miscellaneous.h"
 #include "ReverseEngineered/Systems/BSTEvent.h"
 #include "ReverseEngineered/Types.h"
+#include "skse/GameTypes.h"
 
 namespace RE {
    class InventoryEntryData;
+   class TESFurniture;
    namespace CraftingSubMenus {
       class CraftingSubMenu;
    }
@@ -51,7 +54,7 @@ namespace RE {
             //
             BSTEventSink<TESFurnitureEvent> eventInterface; // 08 // interface; VTBL: 0x010E4410
             GFxMovieView*   view;  // 0C // initialized based on constructor Arg1; not nullptr; has a vtbl
-            uint32_t        unk10; // constructor Arg2 // actor value
+            TESFurniture*   unk10; // constructor Arg2
             Struct0086C790* unk14; // created in the constructor
             Struct0087CE10* unk18; // created in the constructor
             uint32_t unk1C;
@@ -68,7 +71,7 @@ namespace RE {
             uint32_t unkA4;
 
             MEMBER_FN_PREFIX(CraftingSubMenu);
-            DEFINE_MEMBER_FN(Constructor, CraftingSubMenu&, 0x008505F0, GFxValue*, uint32_t, uint32_t);
+            DEFINE_MEMBER_FN(Constructor, CraftingSubMenu&, 0x008505F0, GFxValue*, void*, TESFurniture* unk10);
             DEFINE_MEMBER_FN(SetDescription, void, 0x0084CC70, const char*);
             DEFINE_MEMBER_FN(UpdatePlayerSkillInfo, void, 0x0084C8C0, uint8_t actorValueIndex);
       };
@@ -79,20 +82,18 @@ namespace RE {
          public:
             static constexpr uint32_t vtbl = 0x010E4688;
             //
-            class CraftItemCallback { // sizeof == 0x10, allocated on game heap
+            class CraftItemCallback : public IMessageBoxCallback { // sizeof == 0x10, allocated on game heap
                public:
                   static constexpr uint32_t vtbl = 0x010E46AC;
                   //
-                  uint32_t unk04 = 0;
-                  AlchemyMenu* unk08;
-                  uint8_t  unk0C;
-                  uint8_t  pad0D[3];
+                  AlchemyMenu* owner; // 08
+                  uint8_t unk0C;
+                  uint8_t pad0D[3];
             };
-            class QuitMenuCallback { // sizeof == 0xC, allocated on game heap
+            class QuitMenuCallback : public IMessageBoxCallback { // sizeof == 0xC, allocated on game heap
                public:
                   static constexpr uint32_t vtbl = 0x010E46B8;
                   //
-                  uint32_t     unk04 = 0;
                   AlchemyMenu* owner; // 08
                   //
                   MEMBER_FN_PREFIX(QuitMenuCallback);
@@ -166,10 +167,59 @@ namespace RE {
       static_assert(offsetof(AlchemyMenu, unkC8) >= 0xC8, "RE::CraftingSubMenus::AlchemyMenu::unkC8 is too early!");
       static_assert(offsetof(AlchemyMenu, unkC8) <= 0xC8, "RE::CraftingSubMenus::AlchemyMenu::unkC8 is too late!");
 
+      class ConstructibleObjectMenu : public CraftingSubMenu { // sizeof == 0xE0, allocated on the Scaleform heap
+         //
+         // Only used for crafting new items; for tempering, see SmithingMenu.
+         //
+         public:
+            static constexpr uint32_t vtbl = 0x010E4888;
+            static constexpr uint32_t rtti = 0x012B2D3C;
+            //
+            using unknown = uint32_t; // stop-gap solution for making the tHashSet template args readable
+            using form_id = uint32_t;
+            //
+            struct EntryData {
+               BGSConstructibleObject* form = nullptr; // 00
+               uint32_t filter = 0; // 04
+            };
+            //
+            tArray<EntryData> unkA8; // A8
+            BSTHashMap<form_id, unknown> unkB4; // B4 // <item, key> == <unknown, keyword form ID>
+            uint32_t unkD4 = 0;
+            uint32_t unkD8 = 0;
+            uint32_t unkDC = 0;
+            //
+            MEMBER_FN_PREFIX(ConstructibleObjectMenu);
+            DEFINE_MEMBER_FN(Constructor, ConstructibleObjectMenu&, 0x00857E70, uint32_t, uint32_t);
+            DEFINE_MEMBER_FN(CraftItem,   void, 0x00858E20);
+            DEFINE_MEMBER_FN(Subroutine00857C60, void, 0x00857C60); // builds unkA8 and unkB4
+            DEFINE_MEMBER_FN(Subroutine00856230, void, 0x00856230, void*);
+      };
+
       class EnchantConstructMenu : public CraftingSubMenu { // sizeof == 0x158, allocated on the Scaleform heap
          public:
             static constexpr uint32_t vtbl = 0x010E4460;
             //
+            class CreateEffectFunctor { // sizeof >= 0x24
+               public:
+                  static constexpr uint32_t vtbl = 0x010E435C;
+                  //
+                  uint32_t unk00;
+                  uint16_t unk04 = 0;
+                  uint32_t unk08;
+                  uint32_t unk0C;
+                  uint32_t unk10;
+                  uint32_t unk14 = 0;
+                  uint32_t unk18 = 0;
+                  uint32_t unk1C = 0;
+                  uint32_t unk20 = 0;
+                  //
+                  // No constructor. This is a member of EnchantConstructMenu and is constructed as 
+                  // part of that class's constructor.
+                  //
+                  MEMBER_FN_PREFIX(CreateEffectFunctor);
+                  DEFINE_MEMBER_FN(Destructor, void, 0x0084F310);
+            };
             class ItemChangeEntry { // sizeof == 0x14, allocated on the game heap
                public:
                   static constexpr uint32_t vtbl = 0x010E4240;
@@ -202,17 +252,7 @@ namespace RE {
             } unkF0;
             int32_t  maxEnchantments; // 104 // max number of enchantments on a single item. the Mod Applied Enchantments Allowed perk entry point is checked once, in the constructor
             InventoryEntryData* unk108 = 0; // 108 // see SetItem3D
-            struct { // sizeof >= 0x24
-               uint32_t unk00;
-               uint16_t unk04 = 0;
-               uint32_t unk08;
-               uint32_t unk0C;
-               uint32_t unk10;
-               uint32_t unk14 = 0;
-               uint32_t unk18 = 0;
-               uint32_t unk1C = 0;
-               uint32_t unk20 = 0;
-            } unk10C;
+            CreateEffectFunctor unk10C;
             uint32_t unk130 = 0;
             float    unk134 = 1.0F;
             int32_t  unk138 = -1;
@@ -246,50 +286,65 @@ namespace RE {
       };
 
       class SmithingMenu : public CraftingSubMenu { // sizeof == 0xE8, allocated on the Scaleform heap
+         //
+         // Only used for tempering existing items; for crafting, see ConstructibleObjectMenu.
+         //
          public:
             static constexpr uint32_t vtbl = 0x010E4778;
             //
+            class SmithingConfirmCallback : public IMessageBoxCallback { // sizeof == 0xC
+               public:
+                  static constexpr uint32_t vtbl = 0x010E479C;
+                  static constexpr uint32_t rtti = 0x012B2CF8;
+                  //
+                  SmithingMenu* owner = nullptr; // 08
+                  //
+                  MEMBER_FN_PREFIX(SmithingConfirmCallback);
+                  DEFINE_MEMBER_FN(Constructor, SmithingConfirmCallback&, 0x00856460, SmithingMenu*);
+            };
+            //
             struct UnkA8Entry { // sizeof == 0x20
-               InventoryEntryData* unk00;
+               InventoryEntryData* unk00; // 00
                uint32_t unk04;
-               uint32_t unk08; // 08
-               float    unk0C = 1.0F;
-               float    unk10 = 1.0F; // related to tempering potential
+               uint32_t unk08; // 08 // if == 0, then cannot temper the item
+               float    unk0C = 1.0F; // related to ExtraHealth
+               float    unk10 = 1.0F; // related to ExtraHealth // related to tempering potential
                float    unk14 = 0;
                float    unk18 = 0;
-               uint8_t  unk1C; // possibly "is quest item"?
-               bool     unk1D; // set to the result of testing conditions on unk08
-               uint8_t  unk1E = 0;
+               bool     unk1C; // possibly "is quest item" or more generally "cannot improve this item"
+               bool     conditionsMet; // 1D // the conditions on the COBJ are met (tempering only?)
+               bool     unk1E = false; // possibly "is selected"
                uint8_t  pad1F;
                //
                MEMBER_FN_PREFIX(UnkA8Entry);
                DEFINE_MEMBER_FN(Constructor, UnkA8Entry&, 0x00856490, InventoryEntryData* unk00, uint32_t unk08);
             };
+            struct UnkB4Entry { // sizeof == 0x08?
+               uint32_t unk00;  // 00
+            };
             //
-            tArray<UnkA8Entry> unkA8; // map of items?
-            uint32_t unkB4;
-            uint32_t unkB8;
-            uint32_t unkBC = 0;
-            uint32_t unkC0 = 0;
-            uint32_t unkC4 = 0;
-            void*    unkC8; // initialized to point to 0xDEADBEEF
-            uint32_t unkCC;
-            uint32_t unkD0 = 0;
-            void*    unkD4; // TESObjectREFR*? // constructor argument
-            uint32_t unkD8 = 0;
-            int32_t  unkDC = -1; // int
+            tArray<UnkA8Entry> improveableItems; // A8 // items in the player's inventory that can be improved
+            BSTHashMap<uint32_t, BGSConstructibleObject*> recipes; // B4 // keys are COBJ created objects' form IDs
+            uint32_t unkD4;
+            uint32_t unkD8 =  0; // index unto unkA8
+            int32_t  unkDC = -1; // index into unkA8: index of the item to temper?
             uint32_t smithingFormType; // E0
-            uint32_t unkE4 = 0;
+            InventoryEntryData* unkE4 = nullptr; // E4 // deep copy of an InventoryEntryData in unkA8
+            //
+            inline BGSConstructibleObject* get_cobj_for(uint32_t formID) const {
+               return *this->recipes.table.lookup(formID);
+            }
             //
             MEMBER_FN_PREFIX(SmithingMenu);
             DEFINE_MEMBER_FN(Constructor, SmithingMenu&, 0x008562B0, GFxValue*, uint32_t, uint32_t);
-            DEFINE_MEMBER_FN(CraftItem, void, 0x00858E20);
-            DEFINE_MEMBER_FN(TemperCurrentItem, void, 0x00857520);
+            DEFINE_MEMBER_FN(Destructor, void, 0x008579B0);
             DEFINE_MEMBER_FN(AdvancePlayerSkill, void, 0x008516E0, float by); // inlined in some places including CraftItem
-            DEFINE_MEMBER_FN(Subroutine00857350, void, 0x00857350); // builds the item list?
-            DEFINE_MEMBER_FN(Subroutine00857C60, void, 0x00857C60);
+            DEFINE_MEMBER_FN(RebuildItemList,    void, 0x00857350); // scans the player's inventory. if unkB4.lookup(item->formID) exists, then the item is added to improveableItems.
+            DEFINE_MEMBER_FN(TemperCurrentItem,  void, 0x00857520);
+            DEFINE_MEMBER_FN(Subroutine008570D0, void, 0x008570D0, int32_t index); // resets unkE4 based on unkA8[index]
             DEFINE_MEMBER_FN(Subroutine00850C20, void, 0x00850C20); // accesses player inventory; updates the required materials list
             DEFINE_MEMBER_FN(Subroutine00856F10, void, 0x00856F10); // accesses player inventory; updates the required materials list
+            DEFINE_MEMBER_FN(Subroutine00857A60, void, 0x00857A60); // populates unkB4 and calls RebuildItemList
       };
    };
 }
