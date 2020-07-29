@@ -1,6 +1,7 @@
 #pragma once
 #include "ReverseEngineered/Forms/TESForm.h"
 #include "ReverseEngineered/ExtraData.h"
+#include "ReverseEngineered/Types.h"
 
 namespace RE {
    class Actor;
@@ -109,6 +110,7 @@ namespace RE {
             FormHeap_Free(this);
          }
 
+         void Merge(InventoryEntryData& other); // (other) will have its extra-data lists removed and brought over here. you should generally only call this when working with shallow-copy InventoryEntryData
          UInt8 GetSoulSize() const;
    };
    class InventoryChanges {

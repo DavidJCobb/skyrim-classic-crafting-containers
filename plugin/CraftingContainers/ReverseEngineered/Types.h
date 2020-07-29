@@ -131,7 +131,7 @@ namespace RE {
             ++this->_size;
             return this->_data[this->_size - 1];
          }
-         void push_back(T& item) {
+         void push_back(const T& item) {
             this->append();
             this->_data[this->_size - 1] = item;
          }

@@ -795,6 +795,7 @@ namespace RE {
          DEFINE_MEMBER_FN(GetExtraStartingWorldOrCell,      void*,   0x0040CA90); // Return type not verified. Could be a form ID, I suppose.
          DEFINE_MEMBER_FN(GetExtraTeleport,                 void*,   0x0040C052);
          DEFINE_MEMBER_FN(GetExtraTeleportData,             ExtraTeleport::TeleportData*, 0x0040C050);
+         DEFINE_MEMBER_FN(GetExtraTextDisplayData,          ExtraTextDisplayData*, 0x00418590);
          DEFINE_MEMBER_FN(GetExtraTimeLeft,                 float,   0x0040C1B0); // Returns time left, or -1.0 if no extra data.
          DEFINE_MEMBER_FN(GetExtraTrespassPackageUnk08,     void*,   0x0040CF70); // Returns extraDataObject->unk08, or zero/null if no extra data.
          DEFINE_MEMBER_FN(GetExtraWaterData,                void*,   0x0040EAD0); // Returns extraDataObject->unk08.

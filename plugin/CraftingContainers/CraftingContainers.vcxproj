@@ -109,12 +109,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="helpers\ini.cpp" />
     <ClCompile Include="helpers\strings.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Miscellaneous\tests.cpp" />
     <ClCompile Include="Miscellaneous\utf8naturalsort.cpp" />
     <ClCompile Include="Miscellaneous\utf8string.cpp" />
     <ClCompile Include="Patches\AlchemyMenu.cpp" />
+    <ClCompile Include="Patches\Enchanting.cpp" />
     <ClCompile Include="Patches\Exploratory.cpp" />
     <ClCompile Include="Patches\ExploratoryPatches\DumpRTTIsByVTBL.cpp" />
     <ClCompile Include="Patches\CraftingAndSmithing.cpp" />
@@ -162,6 +164,8 @@
     <None Include="exports.def" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="helpers\ini.h" />
+    <ClInclude Include="helpers\intrusive_windows_defines.h" />
     <ClInclude Include="helpers\math.h" />
     <ClInclude Include="helpers\rtti.h" />
     <ClInclude Include="helpers\strings.h" />
@@ -170,6 +174,7 @@
     <ClInclude Include="Miscellaneous\utf8naturalsort.h" />
     <ClInclude Include="Miscellaneous\utf8string.h" />
     <ClInclude Include="Patches\AlchemyMenu.h" />
+    <ClInclude Include="Patches\Enchanting.h" />
     <ClInclude Include="Patches\Exploratory.h" />
     <ClInclude Include="Patches\ExploratoryPatches\DumpRTTIsByVTBLs.h" />
     <ClInclude Include="Patches\CraftingAndSmithing.h" />

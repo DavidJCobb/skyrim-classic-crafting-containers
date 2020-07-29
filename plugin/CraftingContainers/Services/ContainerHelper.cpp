@@ -1,4 +1,5 @@
 #include "ContainerHelper.h"
+#include "Services/INI.h"
 #include "ReverseEngineered/Forms/TESObjectCELL.h"
 #include "ReverseEngineered/Forms/TESObjectREFR.h"
 #include "ReverseEngineered/Player/PlayerCharacter.h"
@@ -8,6 +9,11 @@
 #include <algorithm>
 
 namespace {
+   float _getMaxContainerDistanceSquared() {
+      static float f = CraftingContainers::INI::General::fMaxContainerDistance.current.f * CraftingContainers::INI::General::fMaxContainerDistance.current.f;
+      return f;
+   }
+
    void _searchCell(RE::TESObjectCELL* cell, std::vector<RE::TESObjectREFR*>& out) {
       auto player = *RE::g_thePlayer;
       //
@@ -21,7 +27,7 @@ namespace {
          auto base = refr->baseForm;
          if (!base || base->formType != RE::form_type::container)
             continue;
-         if (CALL_MEMBER_FN(refr, GetDistanceSquared)(player, true, false) > 589824.0F) // max distance of 768 world units (TODO: make configurable)
+         if (CALL_MEMBER_FN(refr, GetDistanceSquared)(player, true, false) > _getMaxContainerDistanceSquared()) // max distance
             continue;
          auto owner = (RE::TESForm*) CALL_MEMBER_FN((RE::BaseExtraList*)&refr->extraData, GetExtraOwnership)();
          if (owner && owner != player) {

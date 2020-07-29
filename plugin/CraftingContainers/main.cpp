@@ -7,10 +7,11 @@
 #pragma comment( lib, "psapi.lib" ) // needed for PSAPI to link properly
 #include <string>
 
-//#include "Services/INI.h"
+#include "Services/INI.h"
 #include "Patches/Exploratory.h"
 #include "Patches/AlchemyMenu.h"
 #include "Patches/CraftingAndSmithing.h"
+#include "Patches/Enchanting.h"
 
 #include "skse/GameRTTI.h"
 #include "skse/GameObjects.h"
@@ -73,11 +74,12 @@ extern "C" {
    //
    bool SKSEPlugin_Load(const SKSEInterface* skse) {
       _MESSAGE("Load.");
-      //SkyrimOutfitSystem::INISettingManager::GetInstance().Load();
+      CraftingContainers::INI::get().load();
       {  // Patches:
          Patches::Exploratory::Apply();
          Patches::AlchemyMenu::Apply();
          Patches::CraftingAndSmithing::Apply();
+         Patches::Enchanting::Apply();
       }
       return true;
    }

@@ -239,17 +239,28 @@ namespace RE {
             class ItemChangeEntry { // sizeof == 0x14, allocated on the game heap
                public:
                   static constexpr uint32_t vtbl = 0x010E4240;
-                  static constexpr uint32_t rtti = 0x012B2920;
+                  virtual ~ItemChangeEntry();
+                  virtual void Unk_01();
+                  virtual void Unk_02(bool);
+                  virtual const char* GetItemName(); // 03
+                  virtual void Unk_04(uint32_t);
                   //
-                  uint32_t unk04 = 0;
+                  uint32_t unk04 = 0; // refcount
                   uint32_t unk08; // == 0x40 for soul gems; == 0x04 for armor at least sometimes
                   uint8_t  unk0C = false; // probably "selected", same as AlchemyMenu::EntryData
                   uint8_t  unk0D = true; // probably "enabled", same as AlchemyMenu::EntryData
                   uint16_t pad0E = 0;
-                  InventoryEntryData* unk10 = nullptr;
+                  InventoryEntryData* item = nullptr; // 10 // owned by ItemChangeEntry
                   //
                   MEMBER_FN_PREFIX(ItemChangeEntry);
-                  DEFINE_MEMBER_FN(Constructor, ItemChangeEntry&, 0x0084C580, uint32_t unk08, InventoryEntryData* unk10);
+                  DEFINE_MEMBER_FN(Constructor, ItemChangeEntry&, 0x0084C580, uint32_t unk08, InventoryEntryData* item);
+                  //
+                  static ItemChangeEntry* make(uint32_t unk08, InventoryEntryData* item);
+            };
+            class IngredientList : public tArray<ItemChangeEntry*> {
+               public:
+                  MEMBER_FN_PREFIX(IngredientList);
+                  DEFINE_MEMBER_FN(Append, int32_t, 0x0084EC70, ItemChangeEntry*); // returns index
             };
             //
             uint32_t unkA8 = 0x0A;
@@ -257,7 +268,7 @@ namespace RE {
             uint32_t unkB0 = 5;
             uint32_t unkB4 = 0x30;
             uint32_t unkB8 = 0x40;
-            tArray<ItemChangeEntry*> unkBC; // used for soul gems and armor; probably used for weapons, too
+            IngredientList inventory; // BC // used for soul gems and armor; probably used for weapons, too
             BSString unkC8; // 3D model path?
             GFxValue unkD0;
             GFxValue unkE0; // entryList?
@@ -291,8 +302,13 @@ namespace RE {
             DEFINE_MEMBER_FN(Subroutine0084D2B0, void, 0x0084D2B0);
             DEFINE_MEMBER_FN(Subroutine0084DDB0, void, 0x0084DDB0, uint32_t, uint32_t);
             DEFINE_MEMBER_FN(Subroutine0084E340, void, 0x0084E340, uint32_t, uint32_t);
+            DEFINE_MEMBER_FN(Subroutine00852040, void, 0x00852040); // related to renaming items
             DEFINE_MEMBER_FN(RebuildItemList,    void, 0x008500C0, uint32_t alwaysOne);
             //
+            ItemChangeEntry* GetItemEntry(TESForm* itemBase);
+            static bool IsItemValidForUse(InventoryEntryData*); // doesn't check form-type-specific stuff e.g. empty soul gems
+            void ImportSoulGemsFrom(TESObjectREFR* container, bool merge = false); // does not update UI state; just adds to (inventory)
+
             // Enchant consumes a soul gem by way of a call to TESObjectREFR::Unk_56 on the player, at 
             // 0x00852F4B. It may use a call at 0x00852FBA to notify the player of the soul gem's 
             // removal as well.
