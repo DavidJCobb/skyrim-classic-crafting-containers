@@ -76,7 +76,4 @@ namespace RE {
       }
       other.countDelta = 0;
    }
-
-   namespace InventoryUtils {
-   }
 }

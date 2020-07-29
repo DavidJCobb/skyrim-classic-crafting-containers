@@ -110,7 +110,7 @@ namespace RE {
             FormHeap_Free(this);
          }
 
-         void Merge(InventoryEntryData& other); // (other) will have its extra-data lists removed and brought over here. you should generally only call this when working with shallow-copy InventoryEntryData
+         void Merge(InventoryEntryData& other); // (other) will have its extra-data lists removed and brought over here. you should generally only call this when working with shallow-copy InventoryEntryData objects
          UInt8 GetSoulSize() const;
    };
    class InventoryChanges {

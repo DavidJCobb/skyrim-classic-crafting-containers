@@ -54,9 +54,6 @@ extern "C" {
       // Store plugin handle so we can identify ourselves later.
       //
       g_pluginHandle = skse->GetPluginHandle();
-      //
-      //g_SKSEVersionSupported = (skse->skseVersion >= 0x01070300); // 1.7.3.0
-      //
       if (skse->isEditor) {
          _MESSAGE("We've been loaded in the Creation Kit. Marking as incompatible.");
          return false;

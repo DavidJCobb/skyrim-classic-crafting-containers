@@ -12,11 +12,8 @@ namespace Patches {
          void _stdcall Inner(RE::CraftingSubMenus::EnchantConstructMenu* menu) {
             std::vector<RE::TESObjectREFR*> containers;
             ContainerHelper::get_nearby_containers(containers);
-            _MESSAGE("Importing soul gems from %u containers...", containers.size());
-            for (auto* container : containers) {
-               _MESSAGE("Importing soul gems from [REFR:%08X]...", container->formID);
+            for (auto* container : containers)
                menu->ImportSoulGemsFrom(container, true);
-            }
          }
          __declspec(naked) void Outer() {
             _asm {
@@ -47,19 +44,16 @@ namespace Patches {
             }
             std::vector<RE::TESObjectREFR*> containers;
             ContainerHelper::get_nearby_containers(containers);
-            _MESSAGE("%u soul gems left for %u containers to potentiall consume after the player...", count, containers.size());
             for (auto* container : containers) {
                amount = ContainerHelper::non_quest_item_count(container, item);
                remove = count > amount ? amount : count;
                container->Unk_56(out, item, remove, arg4, extra, transferTo, arg7, arg8);
-if (count <= amount) _MESSAGE("All soul gems consumed.");
                if (count <= amount)
                   return out;
                count -= amount;
             }
             if (count > 0)
                _MESSAGE("[WARNING] EnchantConstructMenu: Crafting failed to consume %u of soul gem %08X. Was a container modified?", count, item->formID);
-            _MESSAGE("All soul gems consumed.");
             return out;
          }
          __declspec(naked) void _stdcall Outer() {

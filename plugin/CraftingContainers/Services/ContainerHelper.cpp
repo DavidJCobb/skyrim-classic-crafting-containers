@@ -10,11 +10,10 @@
 
 namespace {
    float _getMaxContainerDistanceSquared() {
-      static float f = CraftingContainers::INI::General::fMaxContainerDistance.current.f * CraftingContainers::INI::General::fMaxContainerDistance.current.f;
-      return f;
+      return CraftingContainers::INI::General::fMaxContainerDistance.current.f * CraftingContainers::INI::General::fMaxContainerDistance.current.f;
    }
 
-   void _searchCell(RE::TESObjectCELL* cell, std::vector<RE::TESObjectREFR*>& out) {
+   void _searchCell(RE::TESObjectCELL* cell, std::vector<RE::TESObjectREFR*>& out, float maxDistanceSquared) {
       auto player = *RE::g_thePlayer;
       //
       CALL_MEMBER_FN(cell, CellRefLockEnter)();
@@ -27,7 +26,7 @@ namespace {
          auto base = refr->baseForm;
          if (!base || base->formType != RE::form_type::container)
             continue;
-         if (CALL_MEMBER_FN(refr, GetDistanceSquared)(player, true, false) > _getMaxContainerDistanceSquared()) // max distance
+         if (CALL_MEMBER_FN(refr, GetDistanceSquared)(player, true, false) > maxDistanceSquared)
             continue;
          auto owner = (RE::TESForm*) CALL_MEMBER_FN((RE::BaseExtraList*)&refr->extraData, GetExtraOwnership)();
          if (owner && owner != player) {
@@ -43,9 +42,10 @@ namespace {
 }
 namespace ContainerHelper {
    void get_nearby_containers(std::vector<RE::TESObjectREFR*>& out) {
-      auto player = (*RE::g_thePlayer);
-      auto cell   = player->parentCell;
-      _searchCell(cell, out);
+      auto  player = (*RE::g_thePlayer);
+      auto  cell   = player->parentCell;
+      float maxDistance = _getMaxContainerDistanceSquared();
+      _searchCell(cell, out, maxDistance);
       if (!(cell->unk2C & RE::TESObjectCELL::kCellFlag_IsInterior)) {
          UInt32 count = 0;
          RE::TESObjectCELL** cells = (RE::TESObjectCELL**) ((RE::TES*)*g_TES)->CopyGridCells(&count);
@@ -54,7 +54,7 @@ namespace ContainerHelper {
          for (UInt32 i = 0; i < count; i++) {
             auto current = cells[i];
             if (current && current != cell)
-               _searchCell(current, out);
+               _searchCell(current, out, maxDistance);
          }
          free(cells);
       }

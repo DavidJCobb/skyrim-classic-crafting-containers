@@ -8,8 +8,6 @@ namespace CraftingContainers {
    namespace INI {
       extern cobb::ini::file& get();
       //
-      // CobbESODeath.ini should be in the "Plugins" folder with the DLL.
-      //
       // INI SETTING DEFINITIONS.
       //
       // The macro used here intentionally differs from the one used in the CPP file. Keep the namespaces 

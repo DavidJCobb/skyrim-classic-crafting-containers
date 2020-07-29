@@ -178,6 +178,7 @@
     <ClInclude Include="Patches\Exploratory.h" />
     <ClInclude Include="Patches\ExploratoryPatches\DumpRTTIsByVTBLs.h" />
     <ClInclude Include="Patches\CraftingAndSmithing.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ReverseEngineered\ExtraData.h" />
     <ClInclude Include="ReverseEngineered\Forms\Actor.h" />
     <ClInclude Include="ReverseEngineered\Forms\ActorValueInfo.h" />
@@ -299,6 +300,9 @@
     <ProjectReference Include="..\skse\skse.vcxproj">
       <Project>{7e0e2d11-eaeb-4404-8d77-ca3572c8680e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CraftingContainers.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
