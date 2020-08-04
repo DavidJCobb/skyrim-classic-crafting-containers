@@ -1,5 +1,6 @@
 #include "ContainerHelper.h"
 #include "Services/INI.h"
+#include "ReverseEngineered/Forms/TESFaction.h"
 #include "ReverseEngineered/Forms/TESObjectCELL.h"
 #include "ReverseEngineered/Forms/TESObjectREFR.h"
 #include "ReverseEngineered/Player/PlayerCharacter.h"
@@ -13,6 +14,40 @@ namespace {
       return CraftingContainers::INI::General::fMaxContainerDistance.current.f * CraftingContainers::INI::General::fMaxContainerDistance.current.f;
    }
 
+   bool _isForbiddenContainer(RE::TESObjectREFR* subject) {
+      static bool s_generated = false;
+      static std::vector<RE::refr_ptr> s_forbidden;
+      if (!s_generated) {
+         auto* dh = RE::TESDataHandler::GetSingleton();
+         if (dh) {
+            s_generated = true;
+            s_forbidden.clear();
+            //
+            auto&    forms = dh->formsByType[RE::form_type::faction];
+            uint32_t size  = forms.count;
+            for (uint32_t i = 0; i < size; ++i) {
+               auto faction = (RE::TESFaction*) forms.arr.entries[i];
+               if (!faction)
+                  continue;
+               auto jc = faction->jailPlayerInventoryContainer;
+               auto sc = faction->stolenGoodsContainer;
+               auto mc = faction->vendorData.merchantContainer;
+               if (jc)
+                  s_forbidden.push_back(jc);
+               if (sc && sc != jc)
+                  s_forbidden.push_back(sc);
+               if (mc && mc != jc && mc != sc)
+                  s_forbidden.push_back(mc);
+            }
+         }
+      }
+      for (const auto& ref : s_forbidden) {
+         if (ref == subject)
+            return true;
+      }
+      return false;
+   }
+
    void _searchCell(RE::TESObjectCELL* cell, std::vector<RE::TESObjectREFR*>& out, float maxDistanceSquared) {
       auto player = *RE::g_thePlayer;
       //
@@ -22,6 +57,8 @@ namespace {
          RE::TESObjectREFR* refr = nullptr;
          cell->objectList.GetNthItem(i, refr);
          if (!refr)
+            continue;
+         if (!refr->IsEnabled())
             continue;
          auto base = refr->baseForm;
          if (!base || base->formType != RE::form_type::container)
@@ -35,6 +72,8 @@ namespace {
             //
             continue;
          }
+         if (_isForbiddenContainer(refr))
+            continue;
          out.push_back(refr);
       }
       CALL_MEMBER_FN(cell, CellRefLockExit)();

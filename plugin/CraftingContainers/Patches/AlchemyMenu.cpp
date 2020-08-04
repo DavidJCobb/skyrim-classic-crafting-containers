@@ -2,6 +2,7 @@
 #include "ReverseEngineered/Forms/TESObjectREFR.h"
 #include "ReverseEngineered/Player/PlayerCharacter.h"
 #include "ReverseEngineered/UI/Crafting.h"
+#include "ReverseEngineered/Types.h"
 #include "Services/ContainerHelper.h"
 #include "skse/SafeWrite.h"
 
@@ -38,7 +39,7 @@ namespace Patches {
          }
       }
       namespace ConsumeItem {
-         RE::BSUntypedPointerHandle& _stdcall Inner(RE::BSUntypedPointerHandle& out, RE::TESForm* item, int32_t count, uint32_t arg4, RE::BaseExtraList* extra, RE::TESObjectREFR* transferTo, bool arg7, bool arg8) {
+         RE::ref_handle& _stdcall Inner(RE::ref_handle& out, RE::TESForm* item, int32_t count, uint32_t arg4, RE::BaseExtraList* extra, RE::TESObjectREFR* transferTo, bool arg7, bool arg8) {
             auto     player = (*RE::g_thePlayer);
             //uint32_t amount = player->GetItemCountFast(item);
             uint32_t amount = ContainerHelper::non_quest_item_count(player, item);

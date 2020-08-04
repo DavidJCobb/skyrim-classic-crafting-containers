@@ -19,7 +19,7 @@
 PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 
 static const char* g_pluginName    = "CraftingContainers";
-const UInt32       g_pluginVersion = 0x01000000; // 0xAABBCCDD = AA.BB.CC.DD with values converted to decimal // major.minor.update.internal-build-or-zero
+const UInt32       g_pluginVersion = 0x01000100; // 0xAABBCCDD = AA.BB.CC.DD with values converted to decimal // major.minor.update.internal-build-or-zero
 
 extern "C" {
    //

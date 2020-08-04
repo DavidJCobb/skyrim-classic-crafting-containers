@@ -4,6 +4,7 @@
 #include "ReverseEngineered/Player/PlayerCharacter.h"
 #include "ReverseEngineered/Systems/Inventory.h"
 #include "ReverseEngineered/UI/Crafting.h"
+#include "ReverseEngineered/Types.h"
 #include "Services/ContainerHelper.h"
 #include "skse/SafeWrite.h"
 
@@ -158,7 +159,7 @@ namespace Patches {
       }
       namespace ConsumeRequiredMaterials {
          BOOL Functor(RE::TESForm* item, uint32_t count) {
-            RE::BSUntypedPointerHandle handle;
+            RE::ref_handle handle;
             //
             auto     player = (*RE::g_thePlayer);
             uint32_t amount = ContainerHelper::non_quest_item_count(player, item);
